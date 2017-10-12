@@ -1,8 +1,9 @@
 var running = true;
 
 var reader = new FileReader();
-                
-//array: command name, # of bytes after command 
+var macFile; // set in readText
+
+//array: command name, # of bytes after command
 var cmds = [
    ["no-op"    ,0],
    ["halt"     ,0],
@@ -16,8 +17,6 @@ var cmds = [
    ["sub"      ,0],
    ["nor"      ,0]
 ];
-
-
 
 function ScrollToElement(theElement){
 
@@ -33,6 +32,7 @@ function ScrollToElement(theElement){
    window.scrollTo(selectedPosX,selectedPosY);
 
 }
+
 function execute(cmd) {
    var pc = parseInt(document.getElementById('pc').value);
    var imm = parseInt(cellAt(pc+1).innerHTML, 2);
@@ -156,11 +156,11 @@ function runMore() {
       return;
    }
    setTimeout(runMore, 100);
-   step();                       
+   step();
 }
 
 function stop() {
-   running = false;               
+   running = false;
 }
 
 function step() {
@@ -195,16 +195,18 @@ function step() {
    
 }
 
-function readText(that){ 
+function readText(that){
 
+   console.log("grabbing input file");
+   console.log(that.files[0]);
    if(that.files && that.files[0]){
-      
+      macFile = that;
       var reader = new FileReader();
       
-      reader.onload = function (e) { 
+      reader.onload = function (e) {
          var output=e.target.result;
 
-         //process text to show only lines with "@":				
+         //process text to show only lines with "@":
          //output=output.split("\n").filter(/./.test, /\@/).join("\n");
          var col = 1;
          var row = 0;
@@ -257,14 +259,10 @@ function int_to_8bit(theInt){
 }
 
 function reset(){
-   alert("Reset not implemented yet");
+   console.log("reset");
 }
    
 function reload(){
-   alert("Reload not implemented yet");
+   readText(macFile);
 }
-      
-      
-      
-      
-      
+
