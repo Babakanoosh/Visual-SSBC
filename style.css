@@ -11,8 +11,8 @@ input.absolu {
 }
 
 table.stayatthetop {
-   position: fixed;
-   left: 215px;
+   position: relative;
+   left: 210px;
    top: 0px;
    background: white;
 }
