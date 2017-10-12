@@ -13,7 +13,13 @@ It is being updated by a student at VIU.
 The op-codes have been updated to work with the latest SSBC version. The "GUI" has been slightly re-done for ease of use. The code has re-structured, re-formatted, and re-factored for maintainability and updatability.
 
 ## TODO
-- include ARTN
-- include Architecture plan
-- add header, and description of SSBC within webapp
-- add dropdown menu
+- dropdown menu
+  - with...
+    - about
+    - cut-down ARTN
+    - architecture
+    - sample code
+    - current-file indication  
+
+- change the "code area" to just a single column for the code not a weird wrap-around thing.
+- add a simple debugging feature
