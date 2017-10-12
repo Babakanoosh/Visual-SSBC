@@ -2,21 +2,68 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Dr. J - SSBC</title>
+	  
+	  <style>
+		table.absolu {
+         position: fixed;
+			left: 0px;
+			top: 50px;
+		}
+
+		input.absolu {
+			position: fixed;
+			left: 0px;
+			top: 0px;
+		}
+
+		table.stayatthetop {
+			position: fixed;
+			left: 215px;
+			top: 0px;
+			background: white;
+		}
+
+		table.belowthetop {
+			position: absolute;
+			left: 215px;
+			top: 75px;
+			background: white;
+			z-index: -1;
+		}
+
+
+
+		thead.stackk, tbody.stack, tr.stack, th.stack, td.stack { display: block;}
+      tr.stack, th.stack, td.stack {width: 95%;}
+
+      tbody.stack  {
+          height: 100px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          width: 100%;
+      }
+
+
+
+</style>
+	  
+    <title>Real-Time SSBC</title>
     <script type="text/javascript">
                 var running = true;
+                
+                //array: command name, # of bytes after command 
                 var cmds = [
-                   ["no-op", 0],
-                   ["halt", 0],
-                   ["pushimm", 1],
-                   ["push ext", 2],
-                   ["pop", 0],
-                   ["pop ext", 2],
-                   ["jnz", 2],
-                   ["add", 0],
-                   ["sub", 0],
-                   ["nor", 0],
-                   ["jnn", 2]
+                   ["no-op"    ,0],
+                   ["halt"     ,0],
+                   ["pushimm"  ,1],
+                   ["push ext" ,2],
+                   ["popinh"   ,0],
+                   ["pop ext"  ,2],
+                   ["jnz"      ,2],
+                   ["jnn"      ,2],
+                   ["add"      ,0],
+                   ["sub"      ,0],
+                   ["nor"      ,0]
                 ];
 
 		var reader = new FileReader();
@@ -94,7 +141,7 @@ function ScrollToElement(theElement){
                       cellAt(addr).style.backgroundColor = "cyan";
                    }
 
-                   if(cmd == 7 || cmd == 8 || cmd == 9) //add, sub, nor
+                   if(cmd == 8 || cmd == 9 || cmd == 10) //add, sub, nor
                    {
                       document.getElementById('sp').value = parseInt(document.getElementById('sp').value) - 1;
                       if(parseInt(document.getElementById('sp').value) < 1)
@@ -106,13 +153,12 @@ function ScrollToElement(theElement){
                       var v1 = parseInt(document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)].cells[0].innerHTML, 2);
                       var v2 = parseInt(document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)-1].cells[0].innerHTML, 2);
                       var result;
-                      if(cmd == 7)
-                         result = v1 + v2;
                       if(cmd == 8)
-                         result = v1 - v2;
+                         result = v1 + v2;
                       if(cmd == 9)
+                         result = v1 - v2;
+                      if(cmd == 10)
                          result = ~(v1 | v2);
-                     
 
                       if(result == 0)
                          cellAt(65531).innerHTML = "10000000"; //PSW
@@ -121,12 +167,12 @@ function ScrollToElement(theElement){
                       if(result < 0)
                          cellAt(65531).innerHTML = "01000000"; //PSW
 
-                      document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)-1].cells[0].innerHTML = result.toString(2);
+                      document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)-1].cells[0].innerHTML = result;
 
                    }
 
-                   if((cmd == 6  && parseInt(cellAt(65531).innerHTML, 2) != parseInt("10000000", 2))
-                    ||(cmd == 10 && parseInt(cellAt(65531).innerHTML, 2) != parseInt("01000000", 2))) //jnn jnz
+                   if((cmd == 6  && parseInt(cellAt(65531).innerHTML, 2) != parseInt("10000000", 2)) //jnz
+                    ||(cmd == 7 && parseInt(cellAt(65531).innerHTML, 2) != parseInt("01000000", 2))) //jnn
                    {
                       cellAt(pc).style.backgroundColor = "pink";
                       document.getElementById('pc').value = addr-3;
@@ -203,7 +249,7 @@ function ScrollToElement(theElement){
 
                    col = 1;
                    cellAt(pc).style.backgroundColor = "yellow";
-ScrollToElement(cellAt(pc));
+                   ScrollToElement(cellAt(pc));
                    document.getElementById('pc').value = pc;
 
                 }
@@ -242,21 +288,34 @@ ScrollToElement(cellAt(pc));
 
 			}//end if html5 filelist support
 		} 
+		
+		function int_to_8bit(theInt){
+			var binary = ["0","0","0","0","0","0","0","0"];
+			
+			result = theInt;
+			
+            for(i=1; i<=8; i++){
+				binary[(8-i)] = result % 2;
+				result =  (result - (result % 2))/2;
+		    }
+		    
+		    var binary_string = "";
+			
+			for(i=0; i<=7; i++){
+				binary_string += binary[(i)].toString();
+		    }
+			return binary_string;
+		}
+
 </script>
 
-<style>
-table.absolu {
-    position: fixed;
-    left: 0px;
-    top: 50px;
-}
-</style>
+
 
 </head>
 <body>
-	<input type="file" onchange='readText(this)' />
+	<input type="file" onchange='readText(this)' class = "absolu"/>
 	<div id="main"></div>
-<table border="1" style="width:180px" class = "absolu"><tr><td>
+<table border="5" style="width:180px" class = "absolu"><tr><td>
     <table border="1" style="width:100%">
       <tr><td><button onclick="step()">Step</button></td>
       <td><button onclick="run()">Run</button><button onclick="stop()">Stop</button></td></tr>
@@ -269,69 +328,74 @@ table.absolu {
       <tr><td>IR:</td><td> <input type="text" size="10" id="irc" value="" readonly></td></tr>
       <tr><td>SP:</td><td> <input type="text" size="10" id="sp" value="0000" readonly></td></tr>
     </table> 
-
-    <table border="1" id="mystack" style="width:100%">
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-       <tr><td>0000</td></tr>
-
+	<table border="0" style = "width:100%;" class = "stack_header">
+		<thead>
+			<tr>
+				<th>Stack</th>
+			</tr>
+	  </thead>
+	</table>
+    <table border="1" id="mystack" style="width:100%; height: 500px;" class = "stack">
+		<tbody style="width:100%; height: 500px;" class = "stack">
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+       <tr class = "stack"><td class = "stack">0000</td></tr>
+		</tbody>
 
     </table>
 </td></tr></table>  
@@ -340,12 +404,12 @@ table.absolu {
   <tr>
     <td style="width:200px"></td>
     <td style="width:*">
-    <table id="dataPorts" border="1" style="width:100%">
+    <table id="dataPorts" border="5" style="width: 1000px" class = "stayatthetop">
       <tr><td>PSW</td><td>A</td><td>B</td><td>C</td><td>D</td> </tr>
       <tr><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
     </table>
 <BR>
-    <table id="dataSection" border="1" style="width:100%">
+    <table id="dataSection" border="1" style="width: 1000px; resize: false;"  class = "belowthetop">
       <tr><td>0000</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
       <tr><td>0001</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
       <tr><td>0002</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
@@ -421,4 +485,3 @@ table.absolu {
 
   </body>
 </html>
-
