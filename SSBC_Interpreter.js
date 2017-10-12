@@ -1,9 +1,8 @@
 var running = true;
 
 var reader = new FileReader();
-var macFile; // set in readText
-
-//array: command name, # of bytes after command
+var selectedFile = "";
+//array: command name, # of bytes after command 
 var cmds = [
    ["no-op"    ,0],
    ["halt"     ,0],
@@ -200,7 +199,7 @@ function readText(that){
    console.log("grabbing input file");
    console.log(that.files[0]);
    if(that.files && that.files[0]){
-      macFile = that;
+      selectedFile = that;
       var reader = new FileReader();
       
       reader.onload = function (e) {
@@ -259,10 +258,33 @@ function int_to_8bit(theInt){
 }
 
 function reset(){
-   console.log("reset");
+   document.getElementById('pc').innerHTML = "0000";
+   document.getElementById('ir').innerHTML = "00000000";
+   document.getElementById('irc').innerHTML = "";
+   document.getElementById('sp').innerHTML = "0000";
+   
+
+   for(j=0; j<=4; j++){
+      document.getElementById('dataPorts').rows[1].cells[j].innerHTML = "00000000";
+      document.getElementById('dataPorts').rows[1].cells[j].style.backgroundColor = "white"
+   }
+
+   
+   for(i=0; i<=63; i++){
+      document.getElementById('mystack').rows[i].cells[0].innerHTML = "00000000";
+      document.getElementById('mystack').rows[i].cells[0].style.backgroundColor = "white"
+   }
+   
+   for(i=0; i<=63; i++){
+      for(j=1; j<=4; j++){
+         document.getElementById('dataSection').rows[i].cells[j].innerHTML = "00000000";
+         document.getElementById('dataSection').rows[i].cells[j].style.backgroundColor = "white"
+      }
+   }
 }
    
 function reload(){
-   readText(macFile);
+   reset();
+   readText(selectedFile);
 }
 
