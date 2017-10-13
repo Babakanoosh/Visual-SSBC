@@ -1,8 +1,3 @@
-table.absolu {
-   position: fixed;
-   left: 0px;
-   top: 30px;
-}
 
 input.absolu {
    position: fixed;
@@ -10,27 +5,13 @@ input.absolu {
    top: 0px;
 }
 
-table.stayatthetop {
-   position: relative;
-   left: 210px;
-   top: 0px;
-   background: white;
-}
 
-table.belowthetop {
-   position: absolute;
-   left: 215px;
-   top: 75px;
-   background: white;
-   z-index: -1;
-}
-
-thead.stackk, tbody.stack, tr.stack, th.stack, td.stack { 
-   display: block;
+thead.stack, tbody.stack, tr.stack, th.stack, td.stack { 
+   /*display: block;*/
 }
 
 tr.stack, th.stack, td.stack {
-   width: 95%;
+   /*width: 95%;*/
 }
 
 tbody.stack  {
