@@ -8,7 +8,7 @@
       <link rel="stylesheet" type="text/css" href="stack_table.css">
       <script src="SSBC_Interpreter.js"></script>
       
-      <title>Real-Time SSBC</title>
+      <title>Visual SSBC</title>
    </head>
 
 
@@ -16,10 +16,16 @@
       <input type="file" onchange='readText(this)' >
       
       <table border="1px" id = "gui_table" class = "gui" >
+         <tr id="gui_header">
+            <td >I/O</td>
+            <td >STACK</td>
+            <td >CODE</td>
+         </tr>
          <tr>
             
             <td class = "interface">
-               <table border="1px" style="width:100%;">
+            
+               <table border="1px" style="width:50%;">
                   <tr>
                   <td>
                      <div style="height:5px"></div>
@@ -32,7 +38,7 @@
                   <tr>
                   <td>
                      <div style="height:5px"></div>
-                     <div class = "heading">I/O</div>
+                     <div class = "heading">EXECUTION</div>
                      <div style="height:5px"></div>
                      <table border="1" style="width:100%">
                         <tr>
@@ -71,16 +77,40 @@
                      
                   <tr>
                   <td>
-         
+                  
+                     <div style="height:5px"></div>
+                     <div class = "heading">PORTS</div>
+                     <div style="height:5px"></div>
+                     
+                     <table id="dataPorts" border="1" style="width: 100%">
+                        <tr><td>PSW</td>     <td>A</td>       <td>B</td>       <td>C</td>       <td>D</td></tr>
+                        <tr><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td></tr>
+                     </table>
                   </td>
                   </tr>
                </table>  
             </td>
             
             <td class = "stack">
-               
-            <table border="1px" id="mystack" style="width:100%; height: 100%" >
-               <tbody style="width:100%; height: 100%" >
+            
+            <table border="1px" id="mystack" >
+               <tbody>                
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
+                  <tr class = "stack"><td class = "stack">00000000</td></tr>
                   
                   <tr class = "stack"><td class = "stack">00000000</td></tr>
                   <tr class = "stack"><td class = "stack">00000000</td></tr>
@@ -154,8 +184,8 @@
             </td>
             
             <td class = "code">
-               
-            <table id="dataSection" border="1px" style="width:100%; height: 100%" >
+
+            <table id="dataSection" border="1px" >
                <tr><td>0000</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
                <tr><td>0001</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
                <tr><td>0002</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
@@ -223,7 +253,8 @@
                <tr><td>003D</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
                <tr><td>003E</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
                <tr><td>003F</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td> </tr>
-            </table> 
+            </table>
+
             </td>
         
          </tr>

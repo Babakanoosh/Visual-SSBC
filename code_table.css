@@ -1,0 +1,7 @@
+#dataSection {
+   display: block;
+   height: 100%;
+   overflow-y: auto;
+   overflow-x: hidden;
+   width: 100%;
+}
