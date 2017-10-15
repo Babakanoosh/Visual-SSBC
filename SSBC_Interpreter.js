@@ -1,9 +1,7 @@
 var running = true;
 
 var reader = new FileReader();
-
 var selectedFile = "";
-                
 //array: command name, # of bytes after command 
 var cmds = [
    ["no-op"    ,0],
@@ -19,8 +17,6 @@ var cmds = [
    ["nor"      ,0]
 ];
 
-
-
 function ScrollToElement(theElement){
 
    var selectedPosX = 0;
@@ -35,6 +31,7 @@ function ScrollToElement(theElement){
    window.scrollTo(selectedPosX,selectedPosY);
 
 }
+
 function execute(cmd) {
    var pc = parseInt(document.getElementById('pc').value);
    var imm = parseInt(cellAt(pc+1).innerHTML, 2);
@@ -158,11 +155,11 @@ function runMore() {
       return;
    }
    setTimeout(runMore, 100);
-   step();                       
+   step();
 }
 
 function stop() {
-   running = false;               
+   running = false;
 }
 
 function step() {
@@ -197,18 +194,18 @@ function step() {
    
 }
 
-function readText(that){ 
+function readText(that){
 
+   console.log("grabbing input file");
+   console.log(that.files[0]);
    if(that.files && that.files[0]){
-      
       selectedFile = that;
-      
       var reader = new FileReader();
       
-      reader.onload = function (e) { 
+      reader.onload = function (e) {
          var output=e.target.result;
 
-         //process text to show only lines with "@":				
+         //process text to show only lines with "@":
          //output=output.split("\n").filter(/./.test, /\@/).join("\n");
          var col = 1;
          var row = 0;
@@ -290,8 +287,4 @@ function reload(){
    reset();
    readText(selectedFile);
 }
-      
-      
-      
-      
-      
+
