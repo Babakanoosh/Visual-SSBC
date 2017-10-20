@@ -7,24 +7,25 @@
       <link rel="stylesheet" type="text/css" href="code_table.css">
       <link rel="stylesheet" type="text/css" href="stack_table.css">
       <script src="SSBC_Interpreter.js"></script>
-      
+
       <title>Visual SSBC</title>
    </head>
 
 
    <body>
       <input type="file" onchange='readText(this)' >
-      
+
       <table border="1px" id = "gui_table" class = "gui" >
          <tr id="gui_header">
-            <td >I/O</td>
-            <td >STACK</td>
-            <td >CODE</td>
+            <td>I/O</td>
+            <td>STACK</td>
+            <td>CODE</td>
          </tr>
+
          <tr>
-            
+
             <td class = "interface">
-            
+
                <table border="1px" style="width:50%;">
                   <tr>
                   <td>
@@ -34,7 +35,7 @@
                      <div style="height:5px"></div>
                   </td>
                   </tr>
-                  
+
                   <tr>
                   <td>
                      <div style="height:5px"></div>
@@ -71,118 +72,108 @@
                         <tr><td>IR:</td><td> <input type="text" size="10" id="irc" value="" readonly></td></tr>
                         <tr><td>SP:</td><td> <input type="text" size="10" id="sp" value="0000" readonly></td></tr>
                      </table>
-                        
-                  </td>   
+
+                  </td>
                   </tr>
-                     
+
                   <tr>
                   <td>
-                  
+
                      <div style="height:5px"></div>
                      <div class = "heading">PORTS</div>
                      <div style="height:5px"></div>
-                     
+
                      <table id="dataPorts" border="1" style="width: 100%">
                         <tr><td>PSW</td>     <td>A</td>       <td>B</td>       <td>C</td>       <td>D</td></tr>
                         <tr><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td></tr>
                      </table>
                   </td>
                   </tr>
-               </table>  
+               </table>
             </td>
-            
-            <td class = "stack">
-            
-            <table border="1px" id="mystack" >
-               <tbody>                
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-                  <tr class = "stack"><td class = "stack">00000000</td></tr>
-               </tbody>
-            </table>
+
+            <td>
+               <table style="height:100%; width: 100%; border: 1px;">
+                  <tr style="height:10px;">
+                     <td>11</td>
+                  </tr>
+
+                  <tr style="height:100%; width: 100%; padding: 0px; margin: 0px; border: 1px;">
+                     <td style="height:100%; width: 100%; padding: 0px; margin: 0px; border: 1px;">
+                        <table border="0px" id="mystack">
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                           <tr><td>00000000</td></tr>
+                        </table>
+                     </td>
+                  </tr>
+               </table>
             </td>
-            
+
             <td class = "code">
 
             <table id="dataSection" border="1px" >
@@ -256,10 +247,10 @@
             </table>
 
             </td>
-        
+
          </tr>
-         
+
       </table>
-      
+
    </body>
 </html>

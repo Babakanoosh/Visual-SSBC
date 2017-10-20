@@ -1,7 +1,18 @@
 #dataSection {
+
+}
+
+
+
+table.code {
+   width: 100%;
+   height: 100%;
+}
+
+table.code tbody {
    display: block;
    height: 100%;
    overflow-y: auto;
-   overflow-x: hidden;
+
    width: 100%;
 }
