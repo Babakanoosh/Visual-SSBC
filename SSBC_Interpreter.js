@@ -17,18 +17,53 @@ var cmds = [
    ["nor"      ,0]
 ];
 
-function ScrollToElement(theElement){
+var OPCODE = {
+    //This is the enumerated list for all of the SSBC opcodes. It is done this way so if an opcode
+    //is changed in the ARTN (as is done yearly) you only have to update this and a not a bunch of if statements
+    //in the execute function aswell.
+    
+    //opcode_num: This number may change so update it as per the current ARTN.
+    //            The number you put in here will automagically be converted to binary when needed
+    //            so you need not worry about conversion errors.
+    
+    //name      : The full name of the function.
+    
+    //code      : Name of the code straight from the ARTN.
+    
+    //operands  : How many bytes/lines of code after the opcode are used as input.
+    
+	NOOP    : {opcode_num:  0, name: "No Operation",     code: "noop"   , operands: 0}, 
+	HALT    : {opcode_num:  1, name: "Halt",             code: "halt"   , operands: 0}, 
+	PUSHIMM : {opcode_num:  2, name: "Push Immediate",   code: "pushimm", operands: 1}, 
+	PUSHEXT : {opcode_num:  3, name: "Push External",    code: "pushext", operands: 2}, 
+	POPINH  : {opcode_num:  4, name: "Pop Inherent",     code: "popinh" , operands: 0}, 
+	POPEXT  : {opcode_num:  5, name: "Pop External",     code: "popext" , operands: 2}, 
+	JNZ     : {opcode_num:  6, name: "Jump Not Zero",    code: "jnz"    , operands: 2}, 
+	JNN     : {opcode_num:  7, name: "Jump Not Negative",code: "jnn"    , operands: 2}, 
+	ADD     : {opcode_num:  8, name: "Addition",         code: "add"    , operands: 0}, 
+	SUB     : {opcode_num:  9, name: "Subtract",         code: "sub"    , operands: 0}, 
+	NOR     : {opcode_num: 10, name: "Not Or",           code: "nor"    , operands: 0}
+};
 
-   var selectedPosX = 0;
+var COLOUR = {
+    
+	JUMP  : {}, 
+	PUSH  : {}, 
+	POP   : {}, 
+	SP    : {}, 
+	PC    : {}, 
+};
+
+
+function ScrollToElement(theElement){
    var selectedPosY = 0;
 
    while(theElement != null){
-      //selectedPosX += theElement.offsetLeft;
       selectedPosY += theElement.offsetTop;
       theElement = theElement.offsetParent;
    }
 
-   window.scrollTo(selectedPosX,selectedPosY);
+   window.scrollTo(0,selectedPosY);
 
 }
 
@@ -244,16 +279,16 @@ function int_to_8bit(theInt){
    
    result = theInt;
    
-      for(i=1; i<=8; i++){
+   for(i=1; i<=8; i++){
       binary[(8-i)] = result % 2;
       result =  (result - (result % 2))/2;
-    }
+   }
     
-    var binary_string = "";
+   var binary_string = "";
    
    for(i=0; i<=7; i++){
       binary_string += binary[(i)].toString();
-    }
+   }
    return binary_string;
 }
 
@@ -263,12 +298,10 @@ function reset(){
    document.getElementById('irc').innerHTML = "";
    document.getElementById('sp').innerHTML = "0000";
    
-
    for(j=0; j<=4; j++){
       document.getElementById('dataPorts').rows[1].cells[j].innerHTML = "00000000";
       document.getElementById('dataPorts').rows[1].cells[j].style.backgroundColor = "white"
    }
-
    
    for(i=0; i<=63; i++){
       document.getElementById('mystack').rows[i].cells[0].innerHTML = "00000000";
