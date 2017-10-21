@@ -12,14 +12,45 @@ It is being updated by a student at VIU.
 
 The op-codes have been updated to work with the latest SSBC version. The "GUI" has been slightly re-done for ease of use. The code has re-structured, re-formatted, and re-factored for maintainability and updatability.
 
-## TODO
-- dropdown menu
-  - with...
-    - about
-    - cut-down ARTN
-    - architecture
-    - sample code
-    - current-file indication  
-
-- change the "code area" to just a single column for the code not a weird wrap-around thing.
-- add a simple debugging feature
+## Development (Present & Planned)
+  - V1_1_alpha_2 *debugger*
+    - Simple Debugger....more info later **todo**
+   
+  - V1_1_alpha_1 *full specification emulation*
+    - Code and Memory-mapped I/O are now on the stack. (Yup, the code and memory can overwrite each other!) **todo**
+    - Full size of stack. **todo**
+   
+  - **Visual SSBC 1.0**
+    - will write this later...
+  
+  - V1_beta
+    - bug fixes **todo**
+   
+  - V1_alpha_2 *new features*
+    - Added nav bar: **todo**
+      - about.
+      - cut-down ARTN.
+      - architecture.
+      - sample code.
+      - current-file indication .
+    - Stack and Code area size filled in by javascript DOM code to avoid HTML clutter **todo**
+    - Binary<->Decimal conversion code: **todo**
+      - Bytes no-longer change to Dec from, add, sub, popext, pushext.
+    - New line indication code: **todo**
+      -yellow current-line indicator stuck on jnn and jnz lines. **todo**
+   
+  - V1_alpha_1 *fixing what we have*
+    - Made stack and code table scrollable. **todo**
+    - Simplified HTML structure and removed rendundant stuff. **todo**
+    - Increased size of stack. (48 -> 64 Bytes) **todo**
+    - Simplified interpreter code. **todo**
+    - Stack and code now have full Dec and Hex line numbers. **todo**
+    - Code is now just vertical, not the horizontal wrap around design. **todo**
+   
+  - Original++ *fixed the most essential things*
+    - Updated opcodes to latest SSBC specification.
+    - Can't see full stack.....so stack is now scrollable.
+    - Resetting and reloading code is now possible without reloading the webpage.
+    - Added some UI headers.
+   
+  - Original
