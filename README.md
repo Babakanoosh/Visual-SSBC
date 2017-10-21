@@ -40,13 +40,14 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
       -yellow current-line indicator stuck on jnn and jnz lines. **todo**
    
   - V1_alpha_1 *fixing what we have*
-    - Made stack and code table scrollable. **todo**
-    - Simplified HTML structure and removed rendundant stuff. **todo**
-    - Increased size of stack. (48 -> 64 Bytes) **todo**
+    - Interpreter works with new HTML layout. **todo**
+    - Made stack and code table scrollable.
+    - Simplified HTML structure and removed rendundant stuff.
+    - Increased size of stack. (48 -> 64 Bytes)
     - Simplified interpreter code. **todo**
-    - Stack and code now have full Dec and Hex line numbers. **todo**
-    - Code is now just vertical, not the horizontal wrap around design. **todo**
-   
+    - Stack and code now have full Dec and Hex line numbers.
+    - Code is now just vertical, not the horizontal wrap around design.
+    
   - Original++ *fixed the most essential things*
     - Updated opcodes to latest SSBC specification.
     - Can't see full stack.....so stack is now scrollable.
