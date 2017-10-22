@@ -25,7 +25,7 @@
       <table border="1px" id = "gui_table" class = "gui" >
 
          <tr id="gui_header">
-            <td >I/O</td>
+            <td >INTERFACE</td>
             <td >STACK</td>
             <td >CODE</td>
          </tr>
@@ -34,74 +34,103 @@
 
             <td class = "interface">
 
-               <table border="1px" style="width:50%;">
+               <table border="1px" style="width:100%;">
+                  <div style="height:5px"></div>
+                  <div class = "heading">STATE</div>
+                  <div style="height:5px"></div>
                   <tr>
                   <td>
-                     <div style="height:5px"></div>
-                     <div class = "heading">STATE</div>
+
                      <button style="width:100%" onclick="reset()">Reset</button>
-                     <div style="height:5px"></div>
                      <button style="width:100%" onclick="reload()">Reload</button>
-                     <div style="height:5px"></div>
-                  </td>
-                  </tr>
-
-                  <tr>
-                  <td>
-                     <div style="height:5px"></div>
-                     <div class = "heading">EXECUTION</div>
-                     <div style="height:5px"></div>
-                     <table border="1" style="width:100%">
-                        <tr>
-                           <td>
-                              <button onclick="step()">Step</button>
-                           </td>
-                           <td>
-                              <button onclick="run()">Run</button><button onclick="stop()">Stop</button>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td>
-                              <button onclick="document.getElementById('dataPorts').rows[1].cells[2].innerHTML = document.getElementById('portB').value">Set B</button>
-                           </td>
-                           <td>
-                              <input type="text" size="10" maxlength="8" id="portB" value="00000000">
-                           </td>
-                        </tr>
-                        <tr>
-                           <td>
-                              <button onclick="document.getElementById('dataPorts').rows[1].cells[4].innerHTML = document.getElementById('portD').value">Set D</button>
-                           </td>
-                           <td>
-                              <input type="text" size="10" maxlength="8" id="portD" value="00000000">
-                           </td>
-                        </tr>
-
-                        <tr><td>PC:</td><td> <input type="text" size="10" id="pc" value="0000" readonly></td></tr>
-                        <tr><td>IR:</td><td> <input type="text" size="10" id="ir" value="00000000" readonly></td></tr>
-                        <tr><td>IR:</td><td> <input type="text" size="10" id="irc" value="" readonly></td></tr>
-                        <tr><td>SP:</td><td> <input type="text" size="10" id="sp" value="0000" readonly></td></tr>
-                     </table>
-
-                  </td>
-                  </tr>
-
-                  <tr>
-                  <td>
-
-                     <div style="height:5px"></div>
-                     <div class = "heading">PORTS</div>
-                     <div style="height:5px"></div>
-
-                     <table id="dataPorts" border="1" style="width: 100%">
-                        <tr><td>PSW</td>     <td>A</td>       <td>B</td>       <td>C</td>       <td>D</td></tr>
-                        <tr><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td><td>00000000</td></tr>
-                     </table>
                   </td>
                   </tr>
                </table>
-            </td>
+               <table border="1px" style="width:100%;">
+                  <div style="height:5px"></div>
+                  <div class = "heading">EXECUTION</div>
+                  <div style="height:5px"></div>
+                  <tr>
+                     <td>
+                        <button onclick="step()">Step</button>
+                     </td>
+                     <td>
+                        <button onclick="run()">Run</button><button onclick="stop()">Stop</button>
+                     </td>
+                  </tr>
+               </table>
+               
+               <table border="1px" style="width:100%;">
+                                       <div style="height:5px"></div>
+                        <div class = "heading">I/O</div>
+                        <div style="height:5px"></div>
+                  <tr>
+                  
+                     <td>
+                        <button onclick="document.getElementById('dataPorts').rows[1].cells[2].innerHTML = document.getElementById('portB').value">Set PSW</button>
+                        <input type="text" size="10" maxlength="8" id="portB" value="00000000">
+                     </td>
+                     <td>
+                        PSW: <input type="text" size="10" id="pc" value="00000000" readonly>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                     </td>
+                     <td>
+                        A: <input type="text" size="10" id="pc" value="00000000" readonly>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                        <button onclick="document.getElementById('dataPorts').rows[1].cells[2].innerHTML = document.getElementById('portB').value">Set B</button>
+                        <input type="text" size="10" maxlength="8" id="portB" value="00000000">
+                     </td>
+                     <td>
+                        B: <input type="text" size="10" id="pc" value="00000000" readonly>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                     </td>
+                     <td>
+                        C: <input type="text" size="10" id="pc" value="00000000" readonly>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                        <button onclick="document.getElementById('dataPorts').rows[1].cells[4].innerHTML = document.getElementById('portD').value">Set D</button>
+                        <input type="text" size="10" maxlength="8" id="portD" value="00000000">
+                     </td>
+                     <td>
+                       D: <input type="text" size="10" id="pc" value="00000000" readonly>
+                     </td>
+                  </tr>
 
+                  <tr>
+                     <td>
+                        <button onclick="document.getElementById('dataPorts').rows[1].cells[4].innerHTML = document.getElementById('portD').value">Set PC</button>
+                        <input type="text" size="10" maxlength="8" id="portD" value="00000000">
+                     </td>
+                     <td>
+                        PC:<input type="text" size="10" id="pc" value="00000000" readonly>
+                     </td>
+                  </tr>
+                  
+                  <tr><td></td><td>IR:<input type="text" size="10" id="ir" value="00000000" readonly></td></tr>
+                  <tr><td></td><td>IR:<input type="text" size="10" id="irc" value="" readonly></td></tr>
+                  <tr>
+                     <td>
+                        <button onclick="document.getElementById('dataPorts').rows[1].cells[2].innerHTML = document.getElementById('portB').value">Set SP</button>
+                        <input type="text" size="10" maxlength="8" id="portB" value="00000000">
+                     </td>
+                     <td>SP:<input type="text" size="10" id="sp" value="00000000" readonly>
+                     </td>
+                  </tr>
+               </table>
+
+            </td>
+            
             <td class="stack">
                <div style="width:280px; height: 91.5%; overflow-y: auto; overflow-x: hidden;">
                   <table border="1" width="100%" height="100%" id="mystack">
