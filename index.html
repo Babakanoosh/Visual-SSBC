@@ -92,13 +92,13 @@
                         <button onclick="Set_PSW()">Set PSW</button>
                         <input type="text" size="10" maxlength="8" id="in_PSW" value="00000000">
                      </td>
-                     <td>PSW: <input type="text" size="10" id="pc" value="00000000" readonly="true"></td>
+                     <td>PSW: <input type="text" size="10" id="psw" value="00000000" readonly="true"></td>
                   </tr>
                   <tr>
                      <td>
                      </td>
                      <td>
-                        A: <input type="text" size="10" id="pc" value="00000000" readonly="true">
+                        A: <input type="text" size="10" id="a" value="00000000" readonly="true">
                      </td>
                   </tr>
                   <tr>
@@ -107,20 +107,20 @@
                         <input type="text" size="10" maxlength="8" id="in_B" value="00000000">
                      </td>
                      <td>
-                        B: <input type="text" size="10" id="pc" value="00000000" readonly="true">
+                        B: <input type="text" size="10" id="b" value="00000000" readonly="true">
                      </td>
                   </tr>
                   <tr>
                      <td>
                      </td>
-                     <td>C: <input type="text" size="10" id="pc" value="00000000" readonly="true"></td>
+                     <td>C: <input type="text" size="10" id="c" value="00000000" readonly="true"></td>
                   </tr>
                   <tr>
                      <td>
                         <button onclick="Set_D()">Set D</button>
                         <input type="text" size="10" maxlength="8" id="in_D" value="00000000">
                      </td>
-                     <td>D: <input type="binary" size="10" id="pc" value="00000000" readonly="true"></td>
+                     <td>D: <input type="binary" size="10" id="d" value="00000000" readonly="true"></td>
                   </tr>
 
                   <tr>
@@ -149,7 +149,7 @@
                   <table border="1" id="mystack">
 
                      <thead>
-                        <tr><th>Line # DEC</th><th>Line # HEX</th><th>VALUE</th></tr>
+                        <tr><th>Line DEC</th><th>Line HEX</th><th>VALUE</th></tr>
                      </thead>
 
                      <tbody>
@@ -166,7 +166,7 @@
 
                  <table border="1" id="dataSection">
                      <thead>
-                        <tr><th>Line # DEC</th><th>Line # HEX</th><th>VALUE</th><th>COMMENTS</th></tr>
+                        <tr><th>Line DEC</th><th>Line HEX</th><th>VALUE</th><th>COMMENTS</th></tr>
                      </thead>
 
                      <tbody>

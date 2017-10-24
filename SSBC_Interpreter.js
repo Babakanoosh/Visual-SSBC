@@ -257,32 +257,31 @@ function readText(that){
 
          //process text to show only lines with "@":
          //output=output.split("\n").filter(/./.test, /\@/).join("\n");
-         var col = 1;
+         var col = 2;
          var row = 0;
-         var myTable = document.getElementById('dataSection');
+         var myTable = document.getElementById("c_scrollBody");
          var lines = this.result.split('\n');
 
          for(var line = 0; line < lines.length; line++){
-            myTable.rows[row].cells[col].innerHTML = lines[line].substr(0,20);
+            myTable.rows[row].cells[col].innerHTML = lines[line].substr(0,8);
+            myTable.rows[row].cells[col+1].innerHTML = lines[line].substr(9,50);
             row++;
 
-            if (row == 64){
-               row = 0;
-               col++;
-            }
          }
 
-         myTable.rows[0].cells[1].style.backgroundColor = "yellow";
+         myTable.rows[0].cells[2].style.backgroundColor = "yellow";
 
       };//end onload()
 
       reader.readAsText(that.files[0]);
 
+      var table = document.getElementById("s_scrollBody")
+console.log(table);
       document.getElementById('pc').value = "0000";
       document.getElementById('ir').value = "00000000";
       document.getElementById('irc').value = "";
       document.getElementById('sp').value = "0000";
-      document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)].cells[0].style.backgroundColor = "green";
+      document.getElementById("s_scrollBody").rows[0].cells[2].style.backgroundColor = "green";
 
       running = true;
 

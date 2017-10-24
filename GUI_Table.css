@@ -1,6 +1,6 @@
 table.gui {
-   width: 1200px;
-   height: 600px;
+   width: 1250px;
+   height: 750px;
    resize: false;
    left: 0px;
    top: 30px;
@@ -18,15 +18,15 @@ table.gui tr td {
 
 
 table.gui tr td.interface {
-   width: 25%;
+   width: 20%;
 }
 
 table.gui tr td.stack {
-   width: 25%;
+   width: 20%;
 }
 
 table.gui tr td.code{
-   width: 50%;
+   width: 60%;
 
 }
 

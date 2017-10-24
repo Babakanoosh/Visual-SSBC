@@ -1,4 +1,4 @@
-function scrolify(tblAsJQueryObject, height){
+function scrolify(tblAsJQueryObject, height, id){
 
    var oTbl = tblAsJQueryObject;
 
@@ -43,6 +43,8 @@ function scrolify(tblAsJQueryObject, height){
    oTbl.find('tbody tr:eq(0) td').each(function(){
        $(this).width($(this).attr("data-item-original-width"));
    });
+
+   oTbl.find('tbody').attr('id',id);
  }
 
 $(document).ready(function(){
@@ -60,8 +62,8 @@ $(document).ready(function(){
 
    var c_proper_height = c_td_height - c_head_height - c_padding;
 
-   scrolify($('#mystack'), s_proper_height);
-   scrolify($('#dataSection'), c_proper_height);
+   scrolify($('#mystack'), s_proper_height,"s_scrollBody");
+   scrolify($('#dataSection'), c_proper_height,"c_scrollBody");
 
    console.log("Scroll Done.");
    console.log("");
