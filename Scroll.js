@@ -46,6 +46,8 @@ function scrolify(tblAsJQueryObject, height){
  }
 
 $(document).ready(function(){
+   console.log("Making table scrollable...");
+
    var s_head_height = $('#mystack').find('thead').outerHeight();
    var s_td_height = $('#stack_td').height();
    var s_padding = 2;
@@ -60,4 +62,7 @@ $(document).ready(function(){
 
    scrolify($('#mystack'), s_proper_height);
    scrolify($('#dataSection'), c_proper_height);
+
+   console.log("Scroll Done.");
+   console.log("");
 });

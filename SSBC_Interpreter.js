@@ -1,7 +1,22 @@
+//##############################################################################################
+//###################################   GLOBAL VARIABLES  ######################################
+//##############################################################################################
+
+var stack_Size = 256;
+var code_Size = 1024;
+
+
 var running = true;
 
 var reader = new FileReader();
 var selectedFile = "";
+
+//##############################################################################################
+//##############################################################################################
+//##############################################################################################
+
+
+
 //array: command name, # of bytes after command
 var cmds = [
    ["no-op"    ,0],
@@ -348,6 +363,78 @@ function Set_SP(){
 
 
 
+
+
+
+
+function int_to_8bit(theInt){
+   var binary = ["0","0","0","0","0","0","0","0"];
+
+   result = theInt;
+
+   for(i=1; i<=8; i++){
+      binary[(8-i)] = result % 2;
+      result =  (result - (result % 2))/2;
+   }
+
+   var binary_string = "";
+
+   for(i=0; i<=7; i++){
+      binary_string += binary[(i)].toString();
+   }
+   return binary_string;
+}
+
+
+$( document ).ready(function() {
+   fillStack();
+   fillCode();
+});
+
+function fillStack() {
+   console.log("Stack table size: " + stack_Size);
+   console.log("Filling stack table...");
+
+   var table = document.getElementById("mystack").getElementsByTagName('tbody')[0];
+
+   for(i=(Math.pow(2,8)-1); i>=0; i--){
+      var row = table.insertRow(0);
+
+      var cellLineDec = row.insertCell(0);
+      var cellLineHex = row.insertCell(1);
+      var cellLineVal = row.insertCell(2);
+
+      cellLineDec.innerHTML = i;
+      cellLineHex.innerHTML = (i.toString(16)).toUpperCase();
+      cellLineVal.innerHTML = "00000000";
+   }
+   console.log("Stack fill done.");
+   console.log("");
+}
+
+function fillCode() {
+   console.log("Code table size: " + code_Size);
+   console.log("Filling code table...");
+
+   var table = document.getElementById("dataSection").getElementsByTagName('tbody')[0];
+
+   for(i=(Math.pow(2,10)-1); i>=0; i--){
+      var row = table.insertRow(0);
+
+      var cellLineDec = row.insertCell(0);
+      var cellLineHex = row.insertCell(1);
+      var cellLineVal = row.insertCell(2);
+      var cellLineCom = row.insertCell(3);
+
+      cellLineDec.innerHTML = i;
+      cellLineHex.innerHTML = (i.toString(16)).toUpperCase();
+      cellLineVal.innerHTML = "00000000";
+      cellLineCom.innerHTML = "";
+   }
+   console.log("Code fill done.");
+   console.log("");
+}
+
 //##############################################################################################
 //                                       KEYBOARD CONTROL
 //##############################################################################################
@@ -424,3 +511,5 @@ $(function(){
       }
     });
 });
+
+
