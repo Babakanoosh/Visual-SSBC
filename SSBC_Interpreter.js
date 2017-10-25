@@ -15,6 +15,8 @@ var push_color = "orange";
 var jmp_color  = "pink";
 var txt_input_color = "white";
 
+var z_flag = "10000000";
+var n_flag = "01000000";
 
 var Stack_Table = 's_scrollBody';
 var Code_Table = 'c_scrollBody';
@@ -30,11 +32,12 @@ var reader = new FileReader();
 var selectedFile = "";
 
 //array: command name, # of bytes after command
+/*
 var cmds = [
    ["no-op"    ,0],
    ["halt"     ,0],
    ["pushimm"  ,1],
-   ["push ext" ,2],code_Size
+   ["push ext" ,2],
    ["popinh"   ,0],
    ["pop ext"  ,2],
    ["jnz"      ,2],
@@ -43,7 +46,7 @@ var cmds = [
    ["sub"      ,0],
    ["nor"      ,0]
 ];
-
+*/
 var OPCODE = {
     //This is the enumerated list for all of the SSBC opcodes. It is done this way so if an opcode
     //is changed in the ARTN (as is done yearly) you only have to update this and a not a bunch of if statements
@@ -59,26 +62,17 @@ var OPCODE = {
 
     //operands  : How many bytes/lines of code after the opcode are used as input.
 
-   NOOP    : {opcode_num:  0, name: "No Operation",     code: "noop"   , operands: 0},
-   HALT    : {opcode_num:  1, name: "Halt",             code: "halt"   , operands: 0},
-   PUSHIMM : {opcode_num:  2, name: "Push Immediate",   code: "pushimm", operands: 1},
-   PUSHEXT : {opcode_num:  3, name: "Push External",    code: "pushext", operands: 2},
-   POPINH  : {opcode_num:  4, name: "Pop Inherent",     code: "popinh" , operands: 0},
-   POPEXT  : {opcode_num:  5, name: "Pop External",     code: "popext" , operands: 2},
-   JNZ     : {opcode_num:  6, name: "Jump Not Zero",    code: "jnz"    , operands: 2},
-   JNN     : {opcode_num:  7, name: "Jump Not Negative",code: "jnn"    , operands: 2},
-   ADD     : {opcode_num:  8, name: "Addition",         code: "add"    , operands: 0},
-   SUB     : {opcode_num:  9, name: "Subtract",         code: "sub"    , operands: 0},
-   NOR     : {opcode_num: 10, name: "Not Or",           code: "nor"    , operands: 0}
-};
-
-var COLOUR = {
-
-   JUMP  : {},
-   PUSH  : {},
-   POP   : {},
-   SP    : {},
-   PC    : {},
+   NOOP    : {op_num:  0, name: "No Operation",     code: "noop"   , operands: 0},
+   HALT    : {op_num:  1, name: "Halt",             code: "halt"   , operands: 0},
+   PUSHIMM : {op_num:  2, name: "Push Immediate",   code: "pushimm", operands: 1},
+   PUSHEXT : {op_num:  3, name: "Push External",    code: "pushext", operands: 2},
+   POPINH  : {op_num:  4, name: "Pop Inherent",     code: "popinh" , operands: 0},
+   POPEXT  : {op_num:  5, name: "Pop External",     code: "popext" , operands: 2},
+   JNZ     : {op_num:  6, name: "Jump Not Zero",    code: "jnz"    , operands: 2},
+   JNN     : {op_num:  7, name: "Jump Not Negative",code: "jnn"    , operands: 2},
+   ADD     : {op_num:  8, name: "Addition",         code: "add"    , operands: 0},
+   SUB     : {op_num:  9, name: "Subtraction",      code: "sub"    , operands: 0},
+   NOR     : {op_num: 10, name: "Not Or",           code: "nor"    , operands: 0}
 };
 
 //##############################################################################################
@@ -93,55 +87,86 @@ var COLOUR = {
 //##############################################################################################
 
 function execute(cmd) {////////////////////NOT WORKING//////////////////////////////////////////
-   var pc = parseInt(document.getElementById('pc').value);
-   var imm = parseInt(cellAt(pc+1).innerHTML, 2);
-   var addr = imm*256 + parseInt(cellAt(pc+2).innerHTML, 2);
-   var top = document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)].cells[0];
 
-   document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)].cells[0].style.backgroundColor = bg_color;
+   var cTable = document.getElementById(Code_Table);
+   var sTable = document.getElementById(Stack_Table);
 
-   if(cmd <0 || cmd > 10){ //push ext
+
+   var pc = parseInt(document.getElementById('pc').value, 2);
+   
+   var operand_h = cellAt(pc+1).innerHTML;
+   var operand_l = cellAt(pc+2).innerHTML;
+   
+   var top = sTable.rows[parseInt(document.getElementById('sp').value, 2)].cells[stack_column];
+
+   sTable.rows[parseInt(document.getElementById('sp').value,2)].cells[stack_column].style.backgroundColor = bg_color;
+
+   if(cmd <0 || cmd > 10){
+      console.log("INVALID OPCODE")
       running = false;
       alert("Fault Line " + pc);
+      return 0;
 
-   }if(cmd == 0){ //no-op
-
-
-   }if(cmd == 1){ //halt
+   }if(cmd == OPCODE.NOOP.op_num){
+      console.log("NOOP")
+      return op(cmd).operands + 1;
+   
+   }if(cmd == OPCODE.HALT.op_num){
+      console.log("HALT")
       running = false;
       alert("Halt Line " + pc);
+      return 0;
 
-   }if(cmd == 2){ //push imm
-      top.innerHTML = imm.toString(2).substr(0,8);
-      document.getElementById('sp').value = parseInt(document.getElementById('sp').value) + 1;
-
-   }if(cmd == 3){ //push ext
+   }if(cmd == OPCODE.PUSHIMM.op_num){
+      console.log("PUSHIMM")
+      
+      top.innerHTML = operand_h;
+      document.getElementById('sp').value = int_to_8bit(parseInt(document.getElementById('sp').value, 2) + 1);
+      return op(cmd).operands + 1;
+      
+   }if(cmd == OPCODE.PUSHEXT.op_num){
+      console.log("PUSHEXT")
+      /*
       top.innerHTML = cellAt(addr).innerHTML.substr(0,8);
-      document.getElementById('sp').value = parseInt(document.getElementById('sp').value) + 1;
-      cellAt(addr).style.backgroundColor = "orange";
+      document.getElementById('sp').value = parseInt(document.getElementById('sp').value, 2) + 1;
+      cellAt(addr).style.backgroundColor = push_color;
+      */
+      return op(cmd).operands + 1;
+   }if(cmd == OPCODE.POPINH.op_num){
+      console.log("POPINH")
+      
+      document.getElementById('sp').value = int_to_8bit(parseInt(document.getElementById('sp').value, 2) - 1);
 
-   }if(cmd == 4){ //pop
-      document.getElementById('sp').value = parseInt(document.getElementById('sp').value) - 1;
+      if(parseInt(document.getElementById('sp').value, 2) < 0){
+         running = false;
+         alert("Pop of empty stack " + cp);
+         
+         return 0;
+      }
+      
+      return op(cmd).operands + 1;
+      
+   }if(cmd == OPCODE.POPEXT.op_num){
+      console.log("POPEXT")
+      /*
+      document.getElementById('sp').value = parseInt(document.getElementById('sp').value, 2) - 1;
 
       if(parseInt(document.getElementById('sp').value) < 0){
          running = false;
          alert("Pop of empty stack " + cp);
-      }
-   }if(cmd == 5){ //pop ext
-
-      document.getElementById('sp').value = parseInt(document.getElementById('sp').value) - 1;
-
-      if(parseInt(document.getElementById('sp').value) < 0){
-         running = false;
-         alert("Pop of empty stack " + cp);
+         
+         return 0;
       }
 
-      top = document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)].cells[0];
+      top = sTable.rows[parseInt(document.getElementById('sp').value, 2)].cells[stack_column];
       cellAt(addr).innerHTML = top.innerHTML;
-      cellAt(addr).style.backgroundColor = "cyan";
-
-   }if(cmd == 8 || cmd == 9 || cmd == 10){ //add, sub, nor
-
+      cellAt(addr).style.backgroundColor = pop_color;
+      */
+      return op(cmd).operands + 1;
+      
+   }if(cmd == OPCODE.ADD.op_num){
+      console.log("ADD")
+      /*
       document.getElementById('sp').value = parseInt(document.getElementById('sp').value) - 1;
       if(parseInt(document.getElementById('sp').value) < 1){
          running = false;
@@ -152,38 +177,136 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
       var v2 = parseInt(document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)-1].cells[0].innerHTML, 2);
       var result;
 
-      if(cmd == 8){
+      if(cmd == OPCODE.ADD.op_num){
          result = v1 + v2;
-      }if(cmd == 9){
+      }if(cmd == OPCODE.SUB.op_num){
          result = v1 - v2;
-      }if(cmd == 10){
+      }if(cmd == OPCODE.NOR.op_num){
          result = ~(v1 | v2);
       }
 
 
       if(result == 0){
-         cellAt(65531).innerHTML = "10000000"; //PSW
+         cellAt(65531).value = "10000000"; //PSW
       }if(result > 0){
-         cellAt(65531).innerHTML = "00000000"; //PSW
+         cellAt(65531).value = "00000000"; //PSW
       }if(result < 0){
-         cellAt(65531).innerHTML = "01000000"; //PSW
+         cellAt(65531).value = "01000000"; //PSW
       }
 
       document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)-1].cells[0].innerHTML = result;
-
-   }if((cmd == 6  && parseInt(cellAt(65531).innerHTML, 2) != parseInt("10000000", 2))||(cmd == 7 && parseInt(cellAt(65531).innerHTML, 2) != parseInt("01000000", 2))){
-      cellAt(pc).style.backgroundColor = "pink";
-      document.getElementById('pc').value = addr-3;
-      pc = parseInt(document.getElementById('pc').value);
-      //cellAt(pc).style.backgroundColor = "violet";
-
+      */
+      
+      return op(cmd).operands + 1;
+      
+   }if(cmd == OPCODE.SUB.op_num){
+      console.log("SUB")
+      return op(cmd).operands + 1;
+      
+   }if(cmd == OPCODE.NOR.op_num){
+      console.log("NOR")
+      return op(cmd).operands + 1;
+      
+   }if((cmd == OPCODE.JNN.op_num) && (document.getElementById('psw').value != n_flag)){
+      console.log("JNN")
+      //cellAt(pc).style.backgroundColor = jmp_color;
+      //document.getElementById('pc').value = addr-3;
+      return op(cmd).operands + 1;
+      
+   }if((cmd == OPCODE.JNZ.op_num) && (document.getElementById('psw').value != z_flag)){
+      console.log("JNZ")
+      //cellAt(pc).style.backgroundColor = jmp_color;
+      //document.getElementById('pc').value = addr-3;
+      return op(cmd).operands + 1;
+      
    }
-
-   document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)].cells[0].style.backgroundColor = sp_color;
 
 }
 
+function run() {
+   running = true;
+   runMore();
+}
 
+function runMore() {
+   if(!running) {
+      return;
+   }
+   setTimeout(runMore, 100);
+   step();
+}
+
+function stop() {
+   running = false;
+}
+
+function step() {
+   var int_pc = parseInt(document.getElementById('pc').value,2);// get curent pc
+   var int_cmd = parseInt(cellAt(int_pc).innerHTML, 2);//convert binary opcode to its decimal value
+   var sTable = document.getElementById(Stack_Table);
+   
+   document.getElementById('ir').value = cellAt(int_pc).innerHTML;//ir equals op code in the code table cell pointed to by pc
+   document.getElementById('irc').value = op(int_cmd).code;
+
+   cellAt(int_pc).style.backgroundColor = bg_color; //reset cell colour
+   
+   var pc_increment = execute(int_cmd);
+   
+   
+   int_pc += pc_increment
+
+
+   cellAt(int_pc).style.backgroundColor = pc_color;
+
+   ScrollCode(parseInt(document.getElementById('pc').value, 2));
+   ScrollStack(parseInt(document.getElementById('sp').value, 2));
+   
+   document.getElementById('pc').value = int_to_10bit(int_pc);
+   
+   sTable.rows[parseInt(document.getElementById('sp').value, 2)].cells[stack_column].style.backgroundColor = sp_color;
+}
+
+function readText(that){
+
+   cTable = document.getElementById(Code_Table);
+   sTable = document.getElementById(Stack_Table);
+
+   console.log("Loading input file...");
+   //console.log(that.files[0]);
+
+   if(that.files && that.files[0]){
+      selectedFile = that;
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+         var output=e.target.result;
+
+         var row = 0;
+
+         var lines = this.result.split('\n');
+         console.log("Filling code table...");
+         for(var line = 0; line < lines.length; line++){
+            //console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
+
+            cTable.rows[row].cells[code_column].innerHTML = lines[line].substr(0,8);
+            cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,49);
+            row++;
+
+         }
+         console.log("Fill Done.");
+         cTable.rows[0].cells[code_column].style.backgroundColor = "yellow";
+
+      };//end onload()
+
+      reader.readAsText(that.files[0]);
+
+      sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
+
+      running = true;
+      console.log("Load Done.");
+      console.log("");
+   }//end if html5 filelist support
+}
 
 //##############################################################################################
 //                                      HTML MODIFICATION
@@ -246,98 +369,17 @@ function fillCode() {
 //                                     INTERFACE FUNCTIONS
 //##############################################################################################
 
-function run() {
-   running = true;
-   runMore();
-}
-
-function runMore() {
-   if(!running) {
-      return;
-   }
-   setTimeout(runMore, 100);
-   step();
-}
-
-function stop() {
-   running = false;
-}
-
-function step() {////////////////////////////////////////NOT WORKING/////////////////////////////////////////////////////
-   var int_pc = parseInt(document.getElementById('pc').value,2);// get curent pc
-
-   document.getElementById('ir').value = cellAt(int_pc).innerHTML;//ir equals op code in the code table cell pointed to by pc
-
-   var int_cmd = parseInt(document.getElementById('ir').value, 2);//convert binary opcode to its decimal value
-
-   if(int_cmd < 11){//if valid command output text version of opcode to irc
-      document.getElementById('irc').value = cmds[int_cmd][0];
-   }
-
-   cellAt(int_pc).style.backgroundColor = bg_color; //reset cell colour
-
-
-
-  //execute(int_cmd);
-
-
-   if(int_cmd < 11){ //increment pc based on opcode
-      int_pc += cmds[int_cmd][1];
-   }
-
-   int_pc += 1; //
-
-   cellAt(int_pc).style.backgroundColor = "yellow";
-   //ScrollToElement(cellAt(pc));
-   document.getElementById('pc').value = int_to_10bit(int_pc);
-
-}
-
-function readText(that){
-
-   cTable = document.getElementById(Code_Table);
-   sTable = document.getElementById(Stack_Table);
-
-   console.log("grabbing input file");
-   console.log(that.files[0]);
-
-   if(that.files && that.files[0]){
-      selectedFile = that;
-      var reader = new FileReader();
-
-      reader.onload = function (e) {
-         var output=e.target.result;
-
-         var row = 0;
-
-         var lines = this.result.split('\n');
-
-         for(var line = 0; line < lines.length; line++){
-            console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
-
-            cTable.rows[row].cells[code_column].innerHTML = lines[line].substr(0,8);
-            cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,49);
-            row++;
-
-         }
-
-         cTable.rows[0].cells[2].style.backgroundColor = "yellow";
-
-      };//end onload()
-
-      reader.readAsText(that.files[0]);
-
-      sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
-
-      running = true;
-
-   }//end if html5 filelist support
-}
-
 function reload(){
-   console.log("Reloading file...");
-   reset();
-   readText(selectedFile);
+    
+   if(selectedFile != ""){
+      console.log("Reloading file...");
+      reset(); 
+      readText(selectedFile);
+   }else{
+      console.log("ERROR: No file selected. Can't reload nothing!");
+      console.log("");
+      alert("No file selected. Can't reload nothing!");
+   }
 }
 
 function reset(){
@@ -393,7 +435,10 @@ function reset(){
       document.getElementById("c_scrollBody").rows[i].cells[comment_column].innerHTML = "";//comment
       document.getElementById("c_scrollBody").rows[i].cells[comment_column].style.backgroundColor = bg_color;
    }
-
+   
+   ScrollCode(0);
+   ScrollStack(0);
+   
    console.log("Reset Done!");
    console.log("");
 }
@@ -427,10 +472,18 @@ function Set_SP(){
    console.log("");
 }
 
-function Set_PSW(){////////////////////NOT WORKING//////////////////////////////////////// ADD VALIDITY CHECK
-   console.log("set PSW");
-   document.getElementById('psw').value = document.getElementById('in_PSW').value;
-
+function Set_PSW(){
+   console.log("Setting PSW...");
+   var input = document.getElementById('in_PSW').value
+   
+   if((input == z_flag) || (input == n_flag) || (input == "00000000")){
+      console.log("Status word good.");
+      document.getElementById('psw').value = document.getElementById('in_PSW').value;
+      console.log("Status word set.");
+   }else{
+      console.log("ERROR: Invalid Status Word!");
+       alert("Invalid Status Word!");
+   }
 }
 
 function Set_B(){
@@ -575,16 +628,79 @@ function cellAt(loc) {
    }
 }
 
-function ScrollToElement(theElement){////////////////////////////////////////NOT WORKING/////////////////////////////////////////////////////
-   var selectedPosY = 0;
+function ScrollCode(row){
+   var cTable = document.getElementById(Code_Table);
 
-   while(theElement != null){
-      selectedPosY += theElement.offsetTop;
-      theElement = theElement.offsetParent;
+   if((row-4) >= 0){
+      cTable.rows[row-4].cells[code_column].scrollIntoView()
+      window.scrollTo(0,0);
+   }else{
+      cTable.rows[0].cells[code_column].scrollIntoView()
+      window.scrollTo(0,0);
    }
+}
 
-   window.scrollTo(0,selectedPosY);
+function ScrollStack(row){
+   var sTable = document.getElementById(Stack_Table);
 
+   if((row-4) >= 0){
+      sTable.rows[row-4].cells[stack_column].scrollIntoView()
+      window.scrollTo(0,0);
+   }else{
+      sTable.rows[0].cells[stack_column].scrollIntoView()
+      window.scrollTo(0,0);
+   }
+}
+
+function op(OpcodeNum){
+   if(OpcodeNum <0 || OpcodeNum > 10){
+      return false;
+
+   }if(OpcodeNum == OPCODE.NOOP.op_num){
+      //console.log("NOOP")
+      return OPCODE.NOOP;
+      
+   }if(OpcodeNum == OPCODE.HALT.op_num){
+      //console.log("HALT")
+      return OPCODE.HALT;
+
+   }if(OpcodeNum == OPCODE.PUSHIMM.op_num){
+      //console.log("PUSHIMM")
+      return OPCODE.PUSHIMM;
+      
+   }if(OpcodeNum == OPCODE.PUSHEXT.op_num){
+      //console.log("PUSHEXT")
+      return OPCODE.PUSHEXT;
+      
+   }if(OpcodeNum == OPCODE.POPINH.op_num){
+      //console.log("POPINH")
+      return OPCODE.POPINH;
+      
+   }if(OpcodeNum == OPCODE.POPEXT.op_num){
+      //console.log("POPEXT")
+      return OPCODE.POPEXT;
+      
+   }if(OpcodeNum == OPCODE.ADD.op_num){
+      //console.log("ADD")
+      return OPCODE.ADD;
+      
+   }if(OpcodeNum == OPCODE.SUB.op_num){
+      //console.log("SUB")
+      return OPCODE.SUB;
+      
+   }if(OpcodeNum == OPCODE.NOR.op_num){
+      //console.log("NOR")
+      return OPCODE.NOR;
+      
+   }if(OpcodeNum == OPCODE.JNN.op_num){
+      //console.log("JNN")
+      return OPCODE.JNN;
+      
+   }if(OpcodeNum == OPCODE.JNZ.op_num){
+      //console.log("JNZ")
+      return OPCODE.JNZ;
+      
+   }
 }
 
 //##############################################################################################
