@@ -73,16 +73,16 @@
                   <div class = "heading">EXECUTION</div>
                   <div style="height:5px"></div>
                   <tr>
-                     <td>
-                        <button onclick="step()">Step</button>
+                     <td style="width:50%" >
+                        <button style="width:100%" onclick="step()">Step</button>
                      </td>
-                     <td>
-                        <button onclick="run()">Run</button><button onclick="stop()">Stop</button>
+                     <td style="width:50%" >
+                        <button style="width:50%" onclick="run()">Run</button><button style="width:50%" onclick="stop()">Stop</button>
                      </td>
                   </tr>
                </table>
 
-               <table border="1px" style="width:100%;">
+               <table id="io_table" border="1px" style="width:100%;">
                   <div style="height:5px"></div>
                   <div class = "heading">I/O</div>
                   <div style="height:5px"></div>
@@ -90,55 +90,51 @@
                   <tr>
                      <td>
                         <button onclick="Set_PSW()">Set PSW</button>
-                        <input type="text" size="10" maxlength="8" id="in_PSW" value="00000000">
+                        <input type="text" size="10" maxlength="8" id="in_PSW">
                      </td>
-                     <td>PSW: <input type="text" size="10" id="psw" value="00000000" readonly="true"></td>
+                     <td><div>PSW</div><input type="text" size="10" id="psw" readonly="true"></td>
                   </tr>
                   <tr>
                      <td>
                      </td>
-                     <td>
-                        A: <input type="text" size="10" id="a" value="00000000" readonly="true">
-                     </td>
+                     <td><div>PORT A</div><input type="text" size="10" id="a" readonly="true"></td>
                   </tr>
                   <tr>
                      <td>
-                        <button onclick="Set_B()">Set B</button>
-                        <input type="text" size="10" maxlength="8" id="in_B" value="00000000">
+                        <button style="width:100%" onclick="Set_B()">Set B</button>
+                        <input type="text" size="10" maxlength="8" id="in_B" >
                      </td>
-                     <td>
-                        B: <input type="text" size="10" id="b" value="00000000" readonly="true">
-                     </td>
+                     <td><div>PORT B</div><input type="text" size="10" id="b" readonly="true"></td>
                   </tr>
                   <tr>
                      <td>
                      </td>
-                     <td>C: <input type="text" size="10" id="c" value="00000000" readonly="true"></td>
+                     <td><div>PORT C</div><input type="text" size="10" id="c" readonly="true"></td>
                   </tr>
                   <tr>
                      <td>
                         <button onclick="Set_D()">Set D</button>
-                        <input type="text" size="10" maxlength="8" id="in_D" value="00000000">
+                        <input type="text" size="10" maxlength="8" id="in_D">
                      </td>
-                     <td>D: <input type="binary" size="10" id="d" value="00000000" readonly="true"></td>
+                     <td><div>PORT D</div><input type="binary" size="10" id="d" readonly="true"></td>
                   </tr>
 
                   <tr>
                      <td>
                         <button onclick="Set_PC()">Set PC</button>
-                        <input type="text" size="10" maxlength="8" id="in_PC" value="00000000">
+                        <input type="text" size="10" maxlength="8" id="in_PC">
                      </td>
-                     <td>PC:<input type="text" size="10" id="pc" value="00000000" readonly="true"></td>
+                     <td><div>PC</div><input type="text" size="10" id="pc" readonly="true"></td>
                   </tr>
 
-                  <tr><td></td><td>IR:<input type="text" size="10" id="ir" value="00000000" readonly="true"></td></tr>
-                  <tr><td></td><td>IR:<input type="text" size="10" id="irc" value="00000000" readonly="true"></td></tr>
+                  <tr><td></td><td><div>IR</div><input type="text" size="10" id="ir" readonly="true"></td></tr>
+                  <tr><td></td><td><div>IR (char)</div><input type="text" size="10" id="irc" readonly="true"></td></tr>
                   <tr>
                      <td>
                         <button onclick="Set_SP()">Set SP</button>
-                        <input type="text" size="10" maxlength="8" id="in_SP" value="00000000">
+                        <input type="text" size="10" maxlength="8" id="in_SP">
                      </td>
-                     <td>SP: <input type="text" size="10" id="sp" value="00000000" readonly="true"></td>
+                     <td><div>SP</div><input type="text" size="10" id="sp" readonly="true"></td>
                   </tr>
                </table>
 

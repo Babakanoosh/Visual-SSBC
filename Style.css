@@ -8,11 +8,34 @@ div.heading {
    text-align: center;
    font-weight: bold;
    width: 100%;
+}
 
+#io_table tr td{
+   width: 50%;
+}
+
+#io_table tr button{
+   width: 100%;
+   height: 50%;
+}
+
+#io_table tr input{
+   width: 96.5%;
+   height: 50%;
+   text-align: center;
+}
+
+
+#io_table tr div{
+   text-align: center;
 }
 
 * {
     font-family: 'Roboto Mono', monospace;
+}
+
+body{
+   background: #DFDFDF;
 }
 
 /*
