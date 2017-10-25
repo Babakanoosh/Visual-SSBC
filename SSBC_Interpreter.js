@@ -1,5 +1,7 @@
 //##############################################################################################
+//##############################################################################################
 //###################################   GLOBAL VARIABLES  ######################################
+//##############################################################################################
 //##############################################################################################
 
 var stack_Size = 256;
@@ -13,6 +15,9 @@ var push_color = "orange";
 var jmp_color  = "pink";
 var txt_input_color = "white";
 
+
+var Stack_Table = 's_scrollBody';
+var Code_Table = 'c_scrollBody';
 
 var code_column = 2;
 var comment_column = 3;
@@ -79,18 +84,13 @@ var COLOUR = {
 //##############################################################################################
 //##############################################################################################
 //##############################################################################################
+//##############################################################################################
+//##############################################################################################
 
-function ScrollToElement(theElement){////////////////////NOT WORKING////////////////////////////
-   var selectedPosY = 0;
 
-   while(theElement != null){
-      selectedPosY += theElement.offsetTop;
-      theElement = theElement.offsetParent;
-   }
-
-   window.scrollTo(0,selectedPosY);
-
-}
+//##############################################################################################
+//                                   INTERPRETER ROUTINES
+//##############################################################################################
 
 function execute(cmd) {////////////////////NOT WORKING//////////////////////////////////////////
    var pc = parseInt(document.getElementById('pc').value);
@@ -183,319 +183,11 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
 
 }
 
-function cellAt(loc) {
-   var myTable;
 
-   if((loc<code_Size) && (loc > -1)) {
 
-      myTable = document.getElementById("c_scrollBody");
-      return myTable.rows[loc].cells[code_column];
-
-   }else if(loc == 65535){ //PORT D
-      return document.getElementById('d');
-
-   }else if(loc == 65534){ //PORT C
-      return document.getElementById('c');
-
-   }else if(loc == 65533){ //PORT B
-      return document.getElementById('b');
-
-   }else if(loc == 65532){ // PORT A
-      return document.getElementById('a');
-
-   }else if(loc == 65531){ //PSW
-      return document.getElementById('psw');
-
-   }else if(loc == 65530){ //STACK POINTER
-      return document.getElementById('sp');
-
-   }else{
-      console.log("Interpreter range exceeded! Program attempted to read/write at location " + loc + " of a min of 0 and a max of " + (code_Size-1));
-      return false;
-
-   }
-}
-
-function run() {
-   running = true;
-   runMore();
-}
-
-function runMore() {
-   if(!running) {
-      return;
-   }
-   setTimeout(runMore, 100);
-   step();
-}
-
-function stop() {
-   running = false;
-}
-
-function step() {////////////////////NOT WORKING////////////////////////////////////////////////
-   var pc = parseInt(document.getElementById('pc').value);
-   var myTable = document.getElementById('dataSection');
-
-   document.getElementById('ir').value = cellAt(pc).innerHTML.substr(0,8);
-
-   var cmd = parseInt(document.getElementById('ir').value, 2);
-
-   cellAt(pc).style.backgroundColor = bg_color ;
-   pc++;
-
-   if(cmd < 11){
-      document.getElementById('irc').value = cmds[cmd][0];
-   }
-
-   execute(cmd);
-
-   pc = parseInt(document.getElementById('pc').value);
-
-   if(cmd < 11){
-      pc += cmds[cmd][1];
-   }
-
-   pc += 1;
-   col = 1;
-
-   cellAt(pc).style.backgroundColor = "yellow";
-   ScrollToElement(cellAt(pc));
-   document.getElementById('pc').value = pc;
-
-}
-
-function readText(that){ ////////////////////NOT WORKING////////////////////////////////////////
-
-   console.log("grabbing input file");
-   console.log(that.files[0]);
-   if(that.files && that.files[0]){
-      selectedFile = that;
-      var reader = new FileReader();
-
-      reader.onload = function (e) {
-         var output=e.target.result;
-
-         //process text to show only lines with "@":
-         //output=output.split("\n").filter(/./.test, /\@/).join("\n");
-         var col = 2;
-         var row = 0;
-         var myTable = document.getElementById("c_scrollBody");
-         var lines = this.result.split('\n');
-
-         for(var line = 0; line < lines.length; line++){
-            myTable.rows[row].cells[col].innerHTML = lines[line].substr(0,8);
-            myTable.rows[row].cells[col+1].innerHTML = lines[line].substr(9,50);
-            row++;
-
-         }
-
-         myTable.rows[0].cells[2].style.backgroundColor = "yellow";
-
-      };//end onload()
-
-      reader.readAsText(that.files[0]);
-
-      var table = document.getElementById("s_scrollBody")
-
-      console.log(table);
-
-      document.getElementById('pc').value = "0000";
-      document.getElementById('ir').value = "00000000";
-      document.getElementById('irc').value = "";
-      document.getElementById('sp').value = "0000";
-      document.getElementById("s_scrollBody").rows[0].cells[2].style.backgroundColor = sp_color;
-
-      running = true;
-
-   }//end if html5 filelist support
-}
-
-function reset(){
-   console.log("Resetting interpreter...");
-
-   document.getElementById('a').value = "00000000";
-   document.getElementById('a').style.backgroundColor = bg_color;
-
-   document.getElementById('in_B').value = "";
-   document.getElementById('in_B').style.backgroundColor = txt_input_color;
-   document.getElementById('b').value = "00000000";
-   document.getElementById('b').style.backgroundColor = bg_color;
-
-   document.getElementById('c').value = "00000000";
-   document.getElementById('c').style.backgroundColor = bg_color;
-
-   document.getElementById('in_D').value = "";
-   document.getElementById('in_D').style.backgroundColor = txt_input_color;
-   document.getElementById('d').value = "00000000";
-   document.getElementById('d').style.backgroundColor = bg_color;
-
-   document.getElementById('in_PC').value = "";
-   document.getElementById('in_PC').style.backgroundColor = txt_input_color;
-   document.getElementById('pc').value = "00000000";
-   document.getElementById('pc').style.backgroundColor = bg_color;
-
-   document.getElementById('ir').value = "00000000";
-   document.getElementById('ir').style.backgroundColor = bg_color;
-
-   document.getElementById('irc').value = "";
-   document.getElementById('irc').style.backgroundColor = bg_color;
-
-   document.getElementById('in_SP').value = "";
-   document.getElementById('in_SP').style.backgroundColor = txt_input_color;
-   document.getElementById('sp').value = "00000000";
-   document.getElementById('sp').style.backgroundColor = bg_color;
-
-   document.getElementById('in_PSW').value = "";
-   document.getElementById('in_PSW').style.backgroundColor = txt_input_color;
-   document.getElementById('psw').value = "00000000";
-   document.getElementById('psw').style.backgroundColor = bg_color;
-
-
-   for(i=0; i<stack_Size; i++){//clear stack
-      document.getElementById("s_scrollBody").rows[i].cells[stack_column].innerHTML = "00000000";
-      document.getElementById("s_scrollBody").rows[i].cells[stack_column].style.backgroundColor = bg_color;
-   }
-
-   for(i=0; i<code_Size; i++){//clear code and comments
-      document.getElementById("c_scrollBody").rows[i].cells[code_column].innerHTML = "00000000";//code
-      document.getElementById("c_scrollBody").rows[i].cells[code_column].style.backgroundColor = bg_color;
-
-      document.getElementById("c_scrollBody").rows[i].cells[comment_column].innerHTML = "";//comment
-      document.getElementById("c_scrollBody").rows[i].cells[comment_column].style.backgroundColor = bg_color;
-   }
-
-   console.log("Reset Done!");
-   console.log("");
-}
-
-function int_to_8bit(theInt){
-   var binary = ["0","0","0","0","0","0","0","0"];
-
-   result = theInt;
-
-   for(i=1; i<=8; i++){
-      binary[(8-i)] = result % 2;
-      result =  (result - (result % 2))/2;
-   }
-
-   var binary_string = "";
-
-   for(i=0; i<=7; i++){
-      binary_string += binary[(i)].toString();
-   }
-   return binary_string;
-}
-
-function reload(){
-   console.log("Reloading file...");
-   reset();
-   readText(selectedFile);
-}
-
-function Set_PSW(){////////////////////NOT WORKING//////////////////////////////////////// ADD VALIDITY CHECK
-   console.log("set PSW");
-   document.getElementById('psw').value = document.getElementById('in_PSW').value;
-
-}
-
-function Set_B(){
-   console.log("set B");
-   document.getElementById('b').value = document.getElementById('in_B').value;
-
-}
-
-function Set_D(){
-   console.log("set D");
-   document.getElementById('d').value = document.getElementById('in_D').value;
-
-}
-
-function Set_PC(){
-   console.log("setting PC...");
-
-   var row = parseInt(document.getElementById('in_PC').value,2) //parse binary to decimal
-
-   if(cValidCell(row)){
-      console.log("Cell value good.");
-      console.log("Value: " + row + " is within " + cRange());
-
-      var old_pc = parseInt(document.getElementById('pc').value,2);// save old PC
-
-      console.log("Old program counter value: " + old_pc);
-
-      document.getElementById("c_scrollBody").rows[old_pc].cells[code_column].style.backgroundColor = bg_color; //clear old PC cell colour
-
-      console.log("Clear old cell colour.");
-
-      document.getElementById('pc').value = document.getElementById('in_PC').value;//update PC
-      document.getElementById("c_scrollBody").rows[row].cells[code_column].style.backgroundColor = pc_color;//colour new PC cell
-
-   }else{
-      console.log("ERROR: Cell specified out of range!");
-      console.log("Value: " + row);
-      console.log(cRange());
-
-   }
-   console.log("");
-
-}
-
-function Set_SP(){
-   console.log("setting SP...");
-
-   var row = parseInt(document.getElementById('in_SP').value,2) //parse binary to decimal
-
-   if(sValidCell(row)){
-      console.log("Cell value good.");
-      console.log("Value: " + row + " is within " + sRange());
-
-      var old_sp = parseInt(document.getElementById('sp').value,2);// save old SP
-
-      console.log("Old stack value: " + old_sp);
-
-      document.getElementById("s_scrollBody").rows[old_sp].cells[stack_column].style.backgroundColor = bg_color; //clear old sp cell colour
-
-      console.log("Clear old cell colour.");
-
-      document.getElementById('sp').value = document.getElementById('in_SP').value;//update sp
-      document.getElementById("s_scrollBody").rows[row].cells[stack_column].style.backgroundColor = sp_color;//colour new sp cell
-
-   }else{
-      console.log("ERROR: Cell specified out of range!");
-      console.log("Value: " + row);
-      console.log(sRange());
-
-   }
-   console.log("");
-}
-
-function sValidCell(intCell) {
-   //does the cell specified fall within the stack range?
-   if((intCell>=0) && (intCell<stack_Size)){
-      return true;
-   }else{
-      return false;
-   }
-}
-
-function cValidCell(intCell) {
-   //does the cell specified fall within the code range?
-   if((intCell>=0) && (intCell<code_Size)){
-      return true;
-   }else{
-      return false;
-   }
-}
-
-function sRange() {
-   return "Stack table size: " + stack_Size + " (0-" + (stack_Size-1) + ")";
-
-}
-
-function cRange() {
-   return "Code table size: " + code_Size + " (0-" + (code_Size-1) + ")";
-}
+//##############################################################################################
+//                                      HTML MODIFICATION
+//##############################################################################################
 
 $(document).ready(function() {
    fillStack();
@@ -548,6 +240,351 @@ function fillCode() {
    }
    console.log("Code fill done.");
    console.log("");
+}
+
+//##############################################################################################
+//                                     INTERFACE FUNCTIONS
+//##############################################################################################
+
+function run() {
+   running = true;
+   runMore();
+}
+
+function runMore() {
+   if(!running) {
+      return;
+   }
+   setTimeout(runMore, 100);
+   step();
+}
+
+function stop() {
+   running = false;
+}
+
+function step() {////////////////////////////////////////NOT WORKING/////////////////////////////////////////////////////
+   var int_pc = parseInt(document.getElementById('pc').value,2);// get curent pc
+
+   document.getElementById('ir').value = cellAt(int_pc).innerHTML;//ir equals op code in the code table cell pointed to by pc
+
+   var int_cmd = parseInt(document.getElementById('ir').value, 2);//convert binary opcode to its decimal value
+
+   if(int_cmd < 11){//if valid command output text version of opcode to irc
+      document.getElementById('irc').value = cmds[int_cmd][0];
+   }
+
+   cellAt(int_pc).style.backgroundColor = bg_color; //reset cell colour
+
+
+
+  //execute(int_cmd);
+
+
+   if(int_cmd < 11){ //increment pc based on opcode
+      int_pc += cmds[int_cmd][1];
+   }
+
+   int_pc += 1; //
+
+   cellAt(int_pc).style.backgroundColor = "yellow";
+   //ScrollToElement(cellAt(pc));
+   document.getElementById('pc').value = int_to_10bit(int_pc);
+
+}
+
+function readText(that){
+
+   cTable = document.getElementById(Code_Table);
+   sTable = document.getElementById(Stack_Table);
+
+   console.log("grabbing input file");
+   console.log(that.files[0]);
+
+   if(that.files && that.files[0]){
+      selectedFile = that;
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+         var output=e.target.result;
+
+         var row = 0;
+
+         var lines = this.result.split('\n');
+
+         for(var line = 0; line < lines.length; line++){
+            console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
+
+            cTable.rows[row].cells[code_column].innerHTML = lines[line].substr(0,8);
+            cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,49);
+            row++;
+
+         }
+
+         cTable.rows[0].cells[2].style.backgroundColor = "yellow";
+
+      };//end onload()
+
+      reader.readAsText(that.files[0]);
+
+      sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
+
+      running = true;
+
+   }//end if html5 filelist support
+}
+
+function reload(){
+   console.log("Reloading file...");
+   reset();
+   readText(selectedFile);
+}
+
+function reset(){
+   console.log("Resetting interpreter...");
+
+   document.getElementById('a').value = "00000000";
+   document.getElementById('a').style.backgroundColor = bg_color;
+
+   document.getElementById('in_B').value = "";
+   document.getElementById('in_B').style.backgroundColor = txt_input_color;
+   document.getElementById('b').value = "00000000";
+   document.getElementById('b').style.backgroundColor = bg_color;
+
+   document.getElementById('c').value = "00000000";
+   document.getElementById('c').style.backgroundColor = bg_color;
+
+   document.getElementById('in_D').value = "";
+   document.getElementById('in_D').style.backgroundColor = txt_input_color;
+   document.getElementById('d').value = "00000000";
+   document.getElementById('d').style.backgroundColor = bg_color;
+
+   document.getElementById('in_PC').value = "";
+   document.getElementById('in_PC').style.backgroundColor = txt_input_color;
+   document.getElementById('pc').value = "0000000000";
+   document.getElementById('pc').style.backgroundColor = bg_color;
+
+   document.getElementById('ir').value = "00000000";
+   document.getElementById('ir').style.backgroundColor = bg_color;
+
+   document.getElementById('irc').value = "";
+   document.getElementById('irc').style.backgroundColor = bg_color;
+
+   document.getElementById('in_SP').value = "";
+   document.getElementById('in_SP').style.backgroundColor = txt_input_color;
+   document.getElementById('sp').value = "00000000";
+   document.getElementById('sp').style.backgroundColor = bg_color;
+
+   document.getElementById('in_PSW').value = "";
+   document.getElementById('in_PSW').style.backgroundColor = txt_input_color;
+   document.getElementById('psw').value = "00000000";
+   document.getElementById('psw').style.backgroundColor = bg_color;
+
+
+   for(i=0; i<stack_Size; i++){//clear stack
+      document.getElementById("s_scrollBody").rows[i].cells[stack_column].innerHTML = "00000000";
+      document.getElementById("s_scrollBody").rows[i].cells[stack_column].style.backgroundColor = bg_color;
+   }
+
+   for(i=0; i<code_Size; i++){//clear code and comments
+      document.getElementById("c_scrollBody").rows[i].cells[code_column].innerHTML = "00000000";//code
+      document.getElementById("c_scrollBody").rows[i].cells[code_column].style.backgroundColor = bg_color;
+
+      document.getElementById("c_scrollBody").rows[i].cells[comment_column].innerHTML = "";//comment
+      document.getElementById("c_scrollBody").rows[i].cells[comment_column].style.backgroundColor = bg_color;
+   }
+
+   console.log("Reset Done!");
+   console.log("");
+}
+
+function Set_SP(){
+   console.log("setting SP...");
+
+   var row = parseInt(document.getElementById('in_SP').value,2) //parse binary to decimal
+
+   if(sValidCell(row)){
+      console.log("Cell value good.");
+      console.log("Value: " + row + " is within " + sRange());
+
+      var old_sp = parseInt(document.getElementById('sp').value,2);// save old SP
+
+      console.log("Old stack value: " + old_sp);
+
+      document.getElementById("s_scrollBody").rows[old_sp].cells[stack_column].style.backgroundColor = bg_color; //clear old sp cell colour
+
+      console.log("Clear old cell colour.");
+
+      document.getElementById('sp').value = document.getElementById('in_SP').value;//update sp
+      document.getElementById("s_scrollBody").rows[row].cells[stack_column].style.backgroundColor = sp_color;//colour new sp cell
+
+   }else{
+      console.log("ERROR: Cell specified out of range!");
+      console.log("Value: " + row);
+      console.log(sRange());
+
+   }
+   console.log("");
+}
+
+function Set_PSW(){////////////////////NOT WORKING//////////////////////////////////////// ADD VALIDITY CHECK
+   console.log("set PSW");
+   document.getElementById('psw').value = document.getElementById('in_PSW').value;
+
+}
+
+function Set_B(){
+   console.log("set B");
+   document.getElementById('b').value = document.getElementById('in_B').value;
+
+}
+
+function Set_D(){
+   console.log("set D");
+   document.getElementById('d').value = document.getElementById('in_D').value;
+
+}
+
+function Set_PC(){
+   console.log("setting PC...");
+
+   var row = parseInt(document.getElementById('in_PC').value,2) //parse binary to decimal
+
+   if(cValidCell(row)){
+      console.log("Cell value good.");
+      console.log("Value: " + row + " is within " + cRange());
+
+      var old_pc = parseInt(document.getElementById('pc').value,2);// save old PC
+
+      console.log("Old program counter value: " + old_pc);
+
+      document.getElementById("c_scrollBody").rows[old_pc].cells[code_column].style.backgroundColor = bg_color; //clear old PC cell colour
+
+      console.log("Clear old cell colour.");
+
+      document.getElementById('pc').value = document.getElementById('in_PC').value;//update PC
+      document.getElementById("c_scrollBody").rows[row].cells[code_column].style.backgroundColor = pc_color;//colour new PC cell
+
+   }else{
+      console.log("ERROR: Cell specified out of range!");
+      console.log("Value: " + row);
+      console.log(cRange());
+
+   }
+   console.log("");
+
+}
+
+//##############################################################################################
+//                                       HELPER FUNCTIONS
+//##############################################################################################
+
+function int_to_8bit(theInt){
+   var binary = ["0","0","0","0","0","0","0","0"];
+
+   result = theInt;
+
+   for(i=1; i<=8; i++){
+      binary[(8-i)] = result % 2;
+      result =  (result - (result % 2))/2;
+   }
+
+   var binary_string = "";
+
+   for(i=0; i<=7; i++){
+      binary_string += binary[(i)].toString();
+   }
+   return binary_string;
+}
+
+function int_to_10bit(theInt){
+   var binary = ["0","0","0","0","0","0","0","0","0","0"];
+
+   result = theInt;
+
+   for(i=1; i<=10; i++){
+      binary[(10-i)] = result % 2;
+      result =  (result - (result % 2))/2;
+   }
+
+   var binary_string = "";
+
+   for(i=0; i<=9; i++){
+      binary_string += binary[(i)].toString();
+   }
+   return binary_string;
+}
+
+function sRange() {
+   return "Stack table size: " + stack_Size + " (0-" + (stack_Size-1) + ")";
+
+}
+
+function cRange() {
+   return "Code table size: " + code_Size + " (0-" + (code_Size-1) + ")";
+}
+
+function sValidCell(intCell) {
+   //does the cell specified fall within the stack range?
+   if((intCell>=0) && (intCell<stack_Size)){
+      return true;
+   }else{
+      return false;
+   }
+}
+
+function cValidCell(intCell) {
+   //does the cell specified fall within the code range?
+   if((intCell>=0) && (intCell<code_Size)){
+      return true;
+   }else{
+      return false;
+   }
+}
+
+function cellAt(loc) {
+   var myTable;
+
+   if((loc<code_Size) && (loc > -1)) {
+
+      myTable = document.getElementById("c_scrollBody");
+      return myTable.rows[loc].cells[code_column];
+
+   }else if(loc == 65535){ //PORT D
+      return document.getElementById('d');
+
+   }else if(loc == 65534){ //PORT C
+      return document.getElementById('c');
+
+   }else if(loc == 65533){ //PORT B
+      return document.getElementById('b');
+
+   }else if(loc == 65532){ // PORT A
+      return document.getElementById('a');
+
+   }else if(loc == 65531){ //PSW
+      return document.getElementById('psw');
+
+   }else if(loc == 65530){ //STACK POINTER
+      return document.getElementById('sp');
+
+   }else{
+      console.log("Interpreter range exceeded! Program attempted to read/write at location " + loc + " of a min of 0 and a max of " + (code_Size-1));
+      return false;
+
+   }
+}
+
+function ScrollToElement(theElement){////////////////////////////////////////NOT WORKING/////////////////////////////////////////////////////
+   var selectedPosY = 0;
+
+   while(theElement != null){
+      selectedPosY += theElement.offsetTop;
+      theElement = theElement.offsetParent;
+   }
+
+   window.scrollTo(0,selectedPosY);
+
 }
 
 //##############################################################################################
@@ -623,5 +660,3 @@ $(function(){
       }
     });
 });
-
-
