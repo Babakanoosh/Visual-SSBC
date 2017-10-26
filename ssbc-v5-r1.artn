@@ -1,0 +1,90 @@
+SSBC Ver 5 Rev 1 (Abstract RTN)
++++++++++++++++++++++++++++++++
+
+Processor State:
+----------------
+PC<15..0>:		Program Counter
+SP<15..0>:		Stack Pointer
+MR<15..0>:		Memory Register
+Ri<7..0?>:		Register i (0 <= i <= 3)
+IR<7..0>:		Instruction Register
+Z:                      1-bit Zero flag
+N:                      1-bit Negative flag
+fault:			1-bit Fault Indicator 
+halt:			1-bit Halt Indicator
+reset:			Reset Signal
+
+Main Memory:
+------------
+MEM[0..2**16-1]<7..0>
+
+Instruction Format
+------------------
+opcode<3..0> := IR<3..0>
+
+Operands/Address
+----------------
+ii<7..0> := MEM[PC]
+s1<7..0> := MEM[SP+1]
+s2<7..0> := MEM[SP+2]
+ext<15..0> := MEM[PC]#MEM[PC+1]
+
+Program Status Word
+-------------------
+PSW<7..0> := Z#N#6@0:
+
+Instruction Interpretation
+--------------------------
+ins_interpretation := (
+Reset -> (PC <- 0x0: SP <- 0xFFFA: halt <- 0x0: fault <- 0x0); ins_interpretation):
+(NOT Reset) and (NOT fault) -> (IR <- MEM[PC]; set_fault; (NOT fault) -> (PC <- PC+1; ins_exe)
+):
+
+Fault Detection
+---------------
+set_fault := fault <- NOT (0 <= opcode <= 0xA)
+
+Instruction Execution
+---------------------
+ins_exe := (
+   noop (:= opcode=0) ->  :
+   halt (:= opcode=1) ->  halt <- 0x1:
+   pushimm (:= opcode=2) -> MEM[SP] <- ii; (SP <- SP-1: PC <- PC+1):
+   pushext (:= opcode=3) -> MEM[SP] <- MEM[ext]; (SP <- SP-1: PC <- PC+2):
+   popinh (:= opcode=4) -> SP <- SP+1:
+   popext (:= opcode=5) -> MEM[ext] <- s1; (SP <- SP+1: PC <- PC+2):
+   jnz (:= opcode=6) -> (NOT Z) -> PC <- ext:
+   jnn (:= opcode=7) -> (NOT N) -> PC <- ext:
+   add (:= opcode=8) -> MEM[SP+2] <- s1+s2; 
+                        (Z <- NOT (R2<7> OR R2<6> .. OR R2<0>): N <- R2<7>:
+                        SP <- SP+1):
+   sub (:= opcode=9) -> MEM[SP+2] <- s1-s2; 
+                        (Z <- NOT (R2<7> OR R2<6> .. OR R2<0>): N <- R2<7>:
+                        SP <- SP+1):
+   nor (:= opcode=10) -> MEM[SP+2] <- s1 NOR s2; SP <- SP+1:
+); ins_interpretation):
+
+Memory Map
+----------
+PSW mapped to 0xFFFB
+Port A (read only) mapped to 0xFFFC
+Port B (write only) mapped to 0xFFFD
+Port C (read only) mapped to 0xFFFE
+Port F (write only) mapped to 0xFFFF
+
+Notation (From Computer Systems Design and Architecture Heuring and Jordan)
+--------
+->            if-then: true condition on left yields value and/or action
+              on right
+
+<-            Register transfer: register on LHS stores value from RHS
+
+:             Parallel separator: actions or evaluations carried out
+              simultaneously
+
+;             Sequential separator: RHS evaluated and/or performed
+              after LHS
+
+@             Replication: LHS repetitions of RHS are concatenated
+
+:=            Definition: text substitution

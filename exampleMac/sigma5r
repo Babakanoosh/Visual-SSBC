@@ -1,0 +1,84 @@
+00000010 pushimm 0              Sigma 5 Recursive Example (see tinpSrc/sigma5r)
+00000000
+00000101 popext PSW
+11111111
+11111011
+00000010 pushimm L(YY)
+00001110                               save L(YY)
+00000010 pushimm H(YY)
+00000000                               save H(YY)
+00000010 pushimm 5
+00000101                               save parameter
+00000110 jnz sigmar5
+00000000
+00010011                               call sigma5r
+00000101 YY: popext A
+11111111
+11111100                               write ret. parameter to A
+00000001 halt
+00000000 ------------------subroutine --------------------------------
+00000010 sigma5r: pushimm 0
+00000000
+00001000 add                           activate Z flag
+00000110 jnz reccall                   recursive call if not base case
+00000000
+00100111
+00000101 popext PSW
+11111111
+11111011                               clear Z
+00000101 popext sigma5r + 12h
+00000000
+00100101
+00000101 popext sigma5r + 13h
+00000000
+00100110                                load return address
+00000010 pushimm 0
+00000000                                load return parameter
+00000110 jnz
+00000000                                return address filled
+00000000                                in at run time
+00000101 reccall: popext hold
+00000001
+00000000                                save parameter in hold
+00000011 pushext hold
+00000001
+00000000
+00000010 pushimm L(recret)
+00111111
+00000010 pushimm H(recret)
+00000000                                load return address
+00000010 pushimm 1
+00000001
+00000011 pushext hold
+00000001
+00000000
+00001001 sub                            sub 1 from parameter
+00000010 pushimm 0
+00000000
+00000101 popext PSW
+11111111
+11111011
+00000110 jnz sigma5r                    recursive call
+00000000
+00010011
+00001000 recret: add                    add sigma n and sigma n-1
+00000101 popext hold
+00000001
+00000000
+00000010 pushimm 0
+00000000
+00000101 popext PSW
+11111111
+11111011
+00000101 popext sigma5r + 3fh
+00000000
+01010010
+00000101 popext sigma5r + 40h
+00000000
+01010011
+00000011 pushext hold                   load return parameter
+00000001
+00000000
+00000110 jnz
+00000000                                 return address
+00000000                                 in at runtime
