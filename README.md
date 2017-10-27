@@ -28,7 +28,7 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
          
       -Improvements:
          - Basic user input checking to prevent stupid mistakes.
-         - Increased size of stack. (48  ->  256 Bytes)
+         - Increased size of stack. (48  ->  512 Bytes)
          - Increased size of code.  (256 -> 1024 Bytes)
          
       -Bug Fixes:
@@ -49,10 +49,10 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
 
    - V1_alpha *fixing what we have*
       - New HTML layout!
-      - Interpreter works with new HTML layout. **todo**
+      - Interpreter works with new HTML layout.
       - Stack and code table scrollable.
       - Simplified HTML structure and removed rendundant stuff.
-      - Increased size of stack. (48  ->  256 Bytes)
+      - Increased size of stack. (48  ->  512 Bytes)
       - Increased size of code.  (256 -> 1024 Bytes)
       - Stack and code now have Dec and Hex line numbering.
       - Code is now just vertical, not the previous confusing horizontal wrap around design.
