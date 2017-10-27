@@ -4,8 +4,8 @@
 //##############################################################################################
 //##############################################################################################
 
-var stack_Size = 256;
-var code_Size = 1024;
+var stack_Size = 512;
+var code_Size  = 1024;
 
 var bg_color   = "#F5F5F5";
 var sp_color   = "green";
@@ -50,9 +50,9 @@ var OPCODE = {
    NOOP    : {op_num:  0, name: "No Operation",     code: "noop"   , operands: 0},
    HALT    : {op_num:  1, name: "Halt",             code: "halt"   , operands: 0},
    PUSHIMM : {op_num:  2, name: "Push Immediate",   code: "pushimm", operands: 1},
-   PUSHEXT : {op_num:  3, name: "Push External",    code: "pushext", operands: 2},
+   PUSHEXT : {op_num:  3, name: "Push Extended",    code: "pushext", operands: 2},
    POPINH  : {op_num:  4, name: "Pop Inherent",     code: "popinh" , operands: 0},
-   POPEXT  : {op_num:  5, name: "Pop External",     code: "popext" , operands: 2},
+   POPEXT  : {op_num:  5, name: "Pop Extended",     code: "popext" , operands: 2},
    JNZ     : {op_num:  6, name: "Jump Not Zero",    code: "jnz"    , operands: 2},
    JNN     : {op_num:  7, name: "Jump Not Negative",code: "jnn"    , operands: 2},
    ADD     : {op_num:  8, name: "Addition",         code: "add"    , operands: 0},
@@ -76,15 +76,24 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
    var cTable = document.getElementById(Code_Table);
    var sTable = document.getElementById(Stack_Table);
 
+   
 
-   var pc = parseInt(document.getElementById('pc').value, 2);
-
+   var pc = parseInt(document.getElementById('pc').innerHTML, 2);
+   
+   if(!cellAt(pc) || !cellAt(pc+1) || !cellAt(pc+2)){
+      alert("Program has reached the end of interpreter usable code space!");
+      console.log("ERROR: Program has reached the end of interpreter usable code space!");
+      console.log("");
+      return 0;
+   };
+   
    var operand_h = cellAt(pc+1).innerHTML;
    var operand_l = cellAt(pc+2).innerHTML;
 
-   var top = sTable.rows[parseInt(document.getElementById('sp').value, 2)].cells[stack_column];
+   var top = sTable.rows[parseInt(document.getElementById('sp').innerHTML, 2)].cells[stack_column];
 
-   sTable.rows[parseInt(document.getElementById('sp').value,2)].cells[stack_column].style.backgroundColor = bg_color;
+   sTable.rows[parseInt(document.getElementById('sp').innerHTML,2)].cells[stack_column].style.backgroundColor = bg_color;
+   cTable.rows[parseInt(document.getElementById('pc').innerHTML,2)].cells[code_column].style.backgroundColor = bg_color;
 
    if(cmd <0 || cmd > 10){
       console.log("INVALID OPCODE");
@@ -92,75 +101,123 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
       alert("Fault Line " + pc);
       return 0;
 
-   }if(cmd == OPCODE.NOOP.op_num){
+   }
+   else if(cmd == OPCODE.NOOP.op_num){
       console.log("NOOP");
       return op(cmd).operands + 1;
 
-   }if(cmd == OPCODE.HALT.op_num){
+   }
+   else if(cmd == OPCODE.HALT.op_num){
       console.log("HALT");
       running = false;
       alert("Halt Line " + pc);
       return 0;
 
-   }if(cmd == OPCODE.PUSHIMM.op_num){
+   }
+   else if(cmd == OPCODE.PUSHIMM.op_num){
       console.log("PUSHIMM");
+      
+      if(sValidCell(parseInt(document.getElementById('sp').innerHTML, 2) + 1)){
+         console.log("       pushing: " + operand_h);
+         top.innerHTML = operand_h;
+         document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) + 1);
+         return op(cmd).operands + 1;
+      }else{
+         console.log("ERROR: Stack full!");
+         console.log("");
+         return 0;
+      }
 
-      top.innerHTML = operand_h;
-      document.getElementById('sp').value = int_to_8bit(parseInt(document.getElementById('sp').value, 2) + 1);
-      return op(cmd).operands + 1;
-
-   }if(cmd == OPCODE.PUSHEXT.op_num){
+   }
+   else if(cmd == OPCODE.PUSHEXT.op_num){
       console.log("PUSHEXT");
-      /*
-      top.innerHTML = cellAt(addr).innerHTML.substr(0,8);
-      document.getElementById('sp').value = parseInt(document.getElementById('sp').value, 2) + 1;
-      cellAt(addr).style.backgroundColor = push_color;
-      */
-      return op(cmd).operands + 1;
+      
+      var addr_16bit = operand_h + operand_l;
+      var int_addr = parseInt(addr_16bit, 2);
+      
+      if(sValidCell(parseInt(document.getElementById('sp').innerHTML, 2) + 1)){
+         if(cValidCell(int_addr)){
+            console.log("      addr bin: " + addr_16bit);            
+            console.log("      addr dec: " + int_addr);
+            console.log("       pushing: " + cellAt(int_addr).innerHTML);
 
-   }if(cmd == OPCODE.POPINH.op_num){
+            document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) + 1);
+            top.innerHTML = cellAt(int_addr).innerHTML;
+            cellAt(int_addr).style.backgroundColor = push_color;
+            
+            return op(cmd).operands + 1;
+         }else{
+            console.log("ERROR: Address specified out of interpreter range!");
+            console.log("Value: " + row);
+            console.log(cRange());
+            return 0;
+         }
+
+      }else{
+         console.log("ERROR: Stack full!");
+         console.log("");
+         return 0;
+      }
+
+   }
+   else if(cmd == OPCODE.POPINH.op_num){
       console.log("POPINH");
 
-      var int_sp = parseInt(document.getElementById('sp').value, 2);
+      var int_sp = parseInt(document.getElementById('sp').innerHTML, 2);
 
       if(sValidCell(int_sp-1)){//is (stack pointer -1) addressable?
-         document.getElementById('sp').value = int_to_8bit(parseInt(document.getElementById('sp').value, 2) - 1);
+         document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) - 1);
 
          return op(cmd).operands + 1;
 
       }else{// if not then error
          running = false;
 
-         alert("Pop of empty stack CP: " + cp);
-         console.log("ERROR: Pop of empty stack CP: " + cp);
+         alert("Pop of empty stack!");
+         console.log("ERROR: Pop of empty stack!");
          console.log("");
 
          return 0;
       }
 
-   }if(cmd == OPCODE.POPEXT.op_num){
+   }
+   else if(cmd == OPCODE.POPEXT.op_num){
       console.log("POPEXT");
-      /*
-      document.getElementById('sp').value = parseInt(document.getElementById('sp').value, 2) - 1;
+      
+      var addr_16bit = operand_h + operand_l;
+      var int_addr = parseInt(addr_16bit, 2);
+      
+      if(sValidCell(parseInt(document.getElementById('sp').innerHTML, 2) - 1)){
+         if(cValidCell(int_addr)){
+            console.log("      addr bin: " + addr_16bit);            
+            console.log("      addr dec: " + int_addr);
+            console.log("        poping: " + cellAt(int_addr).innerHTML);
+            document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) - 1);
+            top.innerHTML = cellAt(int_addr).innerHTML;
 
-      if(parseInt(document.getElementById('sp').value) < 0){
-         running = false;
-         alert("Pop of empty stack " + cp);
+            cellAt(int_addr).innerHTML = sTable.rows[parseInt(document.getElementById('sp').innerHTML,2)].cells[stack_column].innerHTML;
+            cellAt(int_addr).style.backgroundColor = pop_color;
+            
+            return op(cmd).operands + 1;
+         }else{
+            console.log("ERROR: Address specified out of interpreter range!");
+            console.log("Value: " + row);
+            console.log(cRange());
+            return 0;
+         }
 
+      }else{
+         console.log("ERROR: Pop of empty stack!");
+         console.log("");
          return 0;
       }
 
-      top = sTable.rows[parseInt(document.getElementById('sp').value, 2)].cells[stack_column];
-      cellAt(addr).innerHTML = top.innerHTML;
-      cellAt(addr).style.backgroundColor = pop_color;
-      */
-      return op(cmd).operands + 1;
-
-   }if(cmd == OPCODE.ADD.op_num){
+   }
+   else if(cmd == OPCODE.ADD.op_num){
       console.log("ADD");
 
       var sTable = document.getElementById(Stack_Table);
-      var int_sp = parseInt(document.getElementById('sp').value, 2);
+      var int_sp = parseInt(document.getElementById('sp').innerHTML, 2);
 
       if(sValidCell((int_sp-2))){//is (stack pointer -2) addressable?
          //get a and b
@@ -168,12 +225,12 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
          var byte_a = sTable.rows[int_sp-1].cells[stack_column].innerHTML;
          var byte_b = sTable.rows[int_sp-2].cells[stack_column].innerHTML;
 
-         console.log("byte_a " + byte_a);
-         console.log("byte_b " + byte_b);
+         console.log("        byte a: " + byte_a);
+         console.log("        byte b: " + byte_b);
 
          //add a and b
          var byte_result = add_8bit(byte_a, byte_b);
-         console.log("byte_result " + byte_result);
+         console.log("        result: " + byte_result);
 
          //set PSW
          byte_setPSW(byte_result)
@@ -183,7 +240,7 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
          sTable.rows[int_sp-2].cells[stack_column].style.backgroundColor = computed_colour;
 
          //decrement stack pointer
-         document.getElementById('sp').value = int_to_8bit((int_sp-1));
+         document.getElementById('sp').innerHTML = int_to_8bit((int_sp-1));
 
          return op(cmd).operands + 1;
       }else{// if not then error
@@ -196,11 +253,12 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
       }
 
 
-   }if(cmd == OPCODE.SUB.op_num){
+   }
+   else if(cmd == OPCODE.SUB.op_num){
       console.log("SUB");
 
       var sTable = document.getElementById(Stack_Table);
-      var int_sp = parseInt(document.getElementById('sp').value, 2);
+      var int_sp = parseInt(document.getElementById('sp').innerHTML, 2);
 
       if(sValidCell((int_sp-2))){//is (stack pointer -2) addressable?
          //get a and b
@@ -208,16 +266,16 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
          var byte_a = sTable.rows[int_sp-1].cells[stack_column].innerHTML;
          var byte_b = sTable.rows[int_sp-2].cells[stack_column].innerHTML;
 
-         console.log("byte_a " + byte_a);
-         console.log("byte_b " + byte_b);
+         console.log("        byte a: " + byte_a);
+         console.log("        byte b: " + byte_b);
 
          //2s compliment byte b
-         byte_b = nor_8bit(byte_b);//flip bits
+         byte_b = not_8bit(byte_b);//flip bits
          byte_b = add_8bit("00000001", byte_b);//add 1
 
          //add a and b
          var byte_result = add_8bit(byte_a, byte_b);
-         console.log("byte_result " + byte_result);
+         console.log("        result: " + byte_result);
 
          //set PSW
          byte_setPSW(byte_result)
@@ -227,7 +285,7 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
          sTable.rows[int_sp-2].cells[stack_column].style.backgroundColor = computed_colour;
 
          //decrement stack pointer
-         document.getElementById('sp').value = int_to_8bit((int_sp-1));
+         document.getElementById('sp').innerHTML = int_to_8bit((int_sp-1));
 
          return op(cmd).operands + 1;
       }else{// if not then error
@@ -239,73 +297,94 @@ function execute(cmd) {////////////////////NOT WORKING//////////////////////////
          return 0;
       }
 
-   }if(cmd == OPCODE.NOR.op_num){
+   }
+   else if(cmd == OPCODE.NOR.op_num){
       console.log("NOR");
 
       var sTable = document.getElementById(Stack_Table);
-      var int_sp = parseInt(document.getElementById('sp').value, 2);
+      var int_sp = parseInt(document.getElementById('sp').innerHTML, 2);
 
       if(sValidCell((int_sp-2))){//is (stack pointer -2) addressable?
+         //get a and b
 
-         //get a
          var byte_a = sTable.rows[int_sp-1].cells[stack_column].innerHTML;
+         var byte_b = sTable.rows[int_sp-2].cells[stack_column].innerHTML;
 
-         console.log("byte_a " + byte_a);
+         console.log("        byte a: " + byte_a);
+         console.log("        byte b: " + byte_b);
 
-         //nor
-         var byte_result = nor_8bit(byte_a);
-         console.log("byte_result " + byte_result);
+
+         //nor a and b
+         var byte_result = nor_8bit(byte_a, byte_b);
+         console.log("        result: " + byte_result);
+
 
          //put result on stack
          sTable.rows[int_sp-2].cells[stack_column].innerHTML = byte_result;
          sTable.rows[int_sp-2].cells[stack_column].style.backgroundColor = computed_colour;
 
          //decrement stack pointer
-         document.getElementById('sp').value = int_to_8bit((int_sp-1));
+         document.getElementById('sp').innerHTML = int_to_8bit((int_sp-1));
 
          return op(cmd).operands + 1;
       }else{// if not then error
 
-         alert("Subtraction of empty/near-empty stack!");
-         console.log("ERROR: Subtraction of empty/near-empty stack!");
+         alert("NOR of empty/near-empty stack!");
+         console.log("ERROR: NOR of empty/near-empty stack!");
          console.log("");
 
          return 0;
       }
 
-      document.getElementById('sp').value = parseInt(document.getElementById('sp').value) - 1;
-      if(parseInt(document.getElementById('sp').value) < 1){
-         running = false;
-         alert("Pop of empty stack " + cp);
+   }
+   else if(cmd == OPCODE.JNN.op_num){
+      console.log("JNN");
+      
+      var addr_16bit = operand_h + operand_l;
+      var int_addr = parseInt(addr_16bit, 2);
+      console.log("      addr bin: " + addr_16bit);
+      console.log("      addr dec: " + int_addr);
+      if(document.getElementById('psw').innerHTML != n_flag){
+         if(cValidCell(int_addr)){
+
+            cellAt(pc).style.backgroundColor = jmp_color;
+            document.getElementById('pc').innerHTML = int_to_10bit(int_addr-1);//-1 offset due to step() fault check coding
+            return 1;
+         }else{
+            console.log("ERROR: Address specified out of interpreter range!");
+            console.log("Value: " + row);
+            console.log(cRange());
+            return 0;
+         }
+      }else{
+         console.log("Flag set, skipping jump.");
+         return op(cmd).operands + 1;
       }
 
-      var v1 = parseInt(document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)].cells[0].innerHTML, 2);
-      var v2 = parseInt(document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)-1].cells[0].innerHTML, 2);
-      var result;
-
-
-      result = ~(v1 | v2);
-
-
-      int_setPSW(result);
-
-      document.getElementById('mystack').rows[parseInt(document.getElementById('sp').value)-1].cells[0].innerHTML = result;
-
-
-      return op(cmd).operands + 1;
-
-   }if((cmd == OPCODE.JNN.op_num) && (document.getElementById('psw').value != n_flag)){
-      console.log("JNN");
-      //cellAt(pc).style.backgroundColor = jmp_color;
-      //document.getElementById('pc').value = addr-3;
-      return op(cmd).operands + 1;
-
-   }if((cmd == OPCODE.JNZ.op_num) && (document.getElementById('psw').value != z_flag)){
+   }
+   else if(cmd == OPCODE.JNZ.op_num){
       console.log("JNZ");
-      //cellAt(pc).style.backgroundColor = jmp_color;
-      //document.getElementById('pc').value = addr-3;
-      return op(cmd).operands + 1;
+      
+      var addr_16bit = operand_h + operand_l;
+      var int_addr = parseInt(addr_16bit, 2);
+      console.log("      addr bin: " + addr_16bit);
+      console.log("      addr dec: " + int_addr);
+      if(document.getElementById('psw').innerHTML != z_flag){
+         if(cValidCell(int_addr)){
 
+            cellAt(pc).style.backgroundColor = jmp_color;
+            document.getElementById('pc').innerHTML = int_to_10bit(int_addr-1);//-1 offset due to step() fault check coding
+            return 1;
+         }else{
+            console.log("ERROR: Address specified out of interpreter range!");
+            console.log("Value: " + row);
+            console.log(cRange());
+            return 0;
+         }
+      }else{
+         console.log("Flag set, skipping jump.");
+         return op(cmd).operands + 1;
+      }
    }
 
 }
@@ -328,12 +407,12 @@ function stop() {
 }
 
 function step() {
-   var int_pc = parseInt(document.getElementById('pc').value,2);// get curent pc
+   var int_pc = parseInt(document.getElementById('pc').innerHTML,2);// get curent pc
    var int_cmd = parseInt(cellAt(int_pc).innerHTML, 2);//convert binary opcode to its decimal value
    var sTable = document.getElementById(Stack_Table);
 
-   document.getElementById('ir').value = cellAt(int_pc).innerHTML;//ir equals op code in the code table cell pointed to by pc
-   document.getElementById('irc').value = op(int_cmd).code;
+   document.getElementById('ir').innerHTML = cellAt(int_pc).innerHTML;//ir equals op code in the code table cell pointed to by pc
+   document.getElementById('irc').innerHTML = op(int_cmd).code;
 
    cellAt(int_pc).style.backgroundColor = bg_color; //reset cell colour
 
@@ -341,21 +420,24 @@ function step() {
 
    if(pc_increment == 0){running = false;} //0 means halt or fault due to how execute() is coded
 
+   int_pc = parseInt(document.getElementById('pc').innerHTML,2);// get pc again incase a jump happened
    int_pc += pc_increment;
 
 
    cellAt(int_pc).style.backgroundColor = pc_color;
 
-   ScrollCode(parseInt(document.getElementById('pc').value, 2));
-   //ScrollStack(parseInt(document.getElementById('sp').value, 2));
+   ScrollCode(parseInt(document.getElementById('pc').innerHTML, 2));
+   //ScrollStack(parseInt(document.getElementById('sp').innerHTML, 2));
 
-   document.getElementById('pc').value = int_to_10bit(int_pc);
+   document.getElementById('pc').innerHTML = int_to_10bit(int_pc);
 
-   sTable.rows[parseInt(document.getElementById('sp').value, 2)].cells[stack_column].style.backgroundColor = sp_color;
+   sTable.rows[parseInt(document.getElementById('sp').innerHTML, 2)].cells[stack_column].style.backgroundColor = sp_color;
 }
 
 function readText(that){
-
+   
+   reset_interpreter()
+   
    cTable = document.getElementById(Code_Table);
    sTable = document.getElementById(Stack_Table);
 
@@ -372,7 +454,7 @@ function readText(that){
          var row = 0;
 
          var lines = this.result.split('\n');
-         console.log("Filling code table...");
+         console.log("Writing file to code table...");
          for(var line = 0; line < lines.length; line++){
             //console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
 
@@ -381,7 +463,8 @@ function readText(that){
             row++;
 
          }
-         console.log("Fill Done.");
+         console.log("Write done.");
+         console.log("");
          cTable.rows[0].cells[code_column].style.backgroundColor = "yellow";
 
       };//end onload()
@@ -391,7 +474,7 @@ function readText(that){
       sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
 
       running = true;
-      console.log("Load Done.");
+      console.log("File load done.");
       console.log("");
    }//end if html5 filelist support
 }
@@ -401,12 +484,49 @@ function readText(that){
 //##############################################################################################
 
 $(document).ready(function() {
+   console.log("Initializing interpreter...");
    fillStack();
    fillCode();
 
+   //setting table height
+   $("table.gui").css("height", (window.innerHeight - ($("#file_in").height() + $("#info").height())) + "px");
+   
+   $(document).ready(function() {
+      console.log("Making table scrollable...");
+
+      var s_head_height = $('#mystack').find('thead').outerHeight();
+      var s_td_height = $('#stack_td').height();
+      var s_padding = 2;
+
+      var s_proper_height = s_td_height - s_head_height - s_padding;
+
+      var c_head_height = $('#dataSection').find('thead').outerHeight();
+      var c_td_height = $('#code_td').height();
+      var c_padding = 2;
+
+      var c_proper_height = c_td_height - c_head_height - c_padding;
+
+      scrolify($('#mystack'), s_proper_height,"s_scrollBody");
+      scrolify($('#dataSection'), c_proper_height,"c_scrollBody");
+
+      console.log("Scroll Done.");
+      console.log("");
+
+   });
+   
    //calls reset as a 'final' setup procedure. To reduce html clutter reset is called to populate
    //the various input boxes instead of doing it with a value="00000000" in HTML.
-   $(document).ready(function() {reset();}); //
+   $(document).ready(function() {reset_interpreter();});
+   
+   $(document).ready(function() {
+   console.log("Initializion finished!");
+   console.log("");
+   console.log("====================================");
+   console.log("            VISUAL  SSBC            ");
+   console.log("            V1.0 APLHA 1            ");
+   console.log("====================================");
+   console.log("");
+   });
 });
 
 function fillStack() {
@@ -415,7 +535,7 @@ function fillStack() {
 
    var table = document.getElementById("mystack").getElementsByTagName('tbody')[0];
 
-   for(i=(Math.pow(2,8)-1); i>=0; i--){
+   for(i=(stack_Size-1); i>=0; i--){
       var row = table.insertRow(0);
 
       var cellLineDec = row.insertCell(0);
@@ -461,7 +581,7 @@ function reload(){
 
    if(selectedFile != ""){
       console.log("Reloading file...");
-      reset();
+      reset_interpreter();
       readText(selectedFile);
    }else{
       console.log("ERROR: No file selected. Can't reload nothing!");
@@ -470,46 +590,46 @@ function reload(){
    }
 }
 
-function reset(){
+function reset_interpreter(){
    console.log("Resetting interpreter...");
 
    running = false;
 
-   document.getElementById('a').value = "00000000";
+   document.getElementById('a').innerHTML = "00000000";
    document.getElementById('a').style.backgroundColor = bg_color;
 
    document.getElementById('in_B').value = "";
    document.getElementById('in_B').style.backgroundColor = txt_input_color;
-   document.getElementById('b').value = "00000000";
+   document.getElementById('b').innerHTML = "00000000";
    document.getElementById('b').style.backgroundColor = bg_color;
 
-   document.getElementById('c').value = "00000000";
+   document.getElementById('c').innerHTML = "00000000";
    document.getElementById('c').style.backgroundColor = bg_color;
 
    document.getElementById('in_D').value = "";
    document.getElementById('in_D').style.backgroundColor = txt_input_color;
-   document.getElementById('d').value = "00000000";
+   document.getElementById('d').innerHTML = "00000000";
    document.getElementById('d').style.backgroundColor = bg_color;
 
    document.getElementById('in_PC').value = "";
    document.getElementById('in_PC').style.backgroundColor = txt_input_color;
-   document.getElementById('pc').value = "0000000000";
+   document.getElementById('pc').innerHTML = "0000000000";
    document.getElementById('pc').style.backgroundColor = bg_color;
 
-   document.getElementById('ir').value = "00000000";
+   document.getElementById('ir').innerHTML = "00000000";
    document.getElementById('ir').style.backgroundColor = bg_color;
 
-   document.getElementById('irc').value = "";
+   document.getElementById('irc').innerHTML = " ";
    document.getElementById('irc').style.backgroundColor = bg_color;
 
    document.getElementById('in_SP').value = "";
    document.getElementById('in_SP').style.backgroundColor = txt_input_color;
-   document.getElementById('sp').value = "00000000";
+   document.getElementById('sp').innerHTML = "00000000";
    document.getElementById('sp').style.backgroundColor = bg_color;
 
    document.getElementById('in_PSW').value = "";
    document.getElementById('in_PSW').style.backgroundColor = txt_input_color;
-   document.getElementById('psw').value = "00000000";
+   document.getElementById('psw').innerHTML = "00000000";
    document.getElementById('psw').style.backgroundColor = bg_color;
 
 
@@ -542,7 +662,7 @@ function Set_SP(){
       console.log("Cell value good.");
       console.log("Value: " + row + " is within " + sRange());
 
-      var old_sp = parseInt(document.getElementById('sp').value,2);// save old SP
+      var old_sp = parseInt(document.getElementById('sp').innerHTML,2);// save old SP
 
       console.log("Old stack value: " + old_sp);
 
@@ -550,11 +670,11 @@ function Set_SP(){
 
       console.log("Clear old cell colour.");
 
-      document.getElementById('sp').value = document.getElementById('in_SP').value;//update sp
+      document.getElementById('sp').innerHTML = document.getElementById('in_SP').value;//update sp
       document.getElementById("s_scrollBody").rows[row].cells[stack_column].style.backgroundColor = sp_color;//colour new sp cell
 
    }else{
-      console.log("ERROR: Cell specified out of range!");
+      console.log("ERROR: Address specified out of interpreter range!");
       console.log("Value: " + row);
       console.log(sRange());
 
@@ -568,7 +688,7 @@ function Set_PSW(){
 
    if((input == z_flag) || (input == n_flag) || (input == "00000000")){
       console.log("Status word good.");
-      document.getElementById('psw').value = document.getElementById('in_PSW').value;
+      document.getElementById('psw').innerHTML = document.getElementById('in_PSW').value;
       console.log("Status word set.");
    }else{
       console.log("ERROR: Invalid Status Word!");
@@ -578,13 +698,13 @@ function Set_PSW(){
 
 function Set_B(){
    console.log("set B");
-   document.getElementById('b').value = document.getElementById('in_B').value;
+   document.getElementById('b').innerHTML = document.getElementById('in_B').value;
 
 }
 
 function Set_D(){
    console.log("set D");
-   document.getElementById('d').value = document.getElementById('in_D').value;
+   document.getElementById('d').innerHTML = document.getElementById('in_D').value;
 
 }
 
@@ -597,7 +717,7 @@ function Set_PC(){
       console.log("Cell value good.");
       console.log("Value: " + row + " is within " + cRange());
 
-      var old_pc = parseInt(document.getElementById('pc').value,2);// save old PC
+      var old_pc = parseInt(document.getElementById('pc').innerHTML,2);// save old PC
 
       console.log("Old program counter value: " + old_pc);
 
@@ -605,11 +725,11 @@ function Set_PC(){
 
       console.log("Clear old cell colour.");
 
-      document.getElementById('pc').value = document.getElementById('in_PC').value;//update PC
+      document.getElementById('pc').innerHTML = document.getElementById('in_PC').value;//update PC
       document.getElementById("c_scrollBody").rows[row].cells[code_column].style.backgroundColor = pc_color;//colour new PC cell
 
    }else{
-      console.log("ERROR: Cell specified out of range!");
+      console.log("ERROR: Address specified out of interpreter range!");
       console.log("Value: " + row);
       console.log(cRange());
 
@@ -624,26 +744,26 @@ function Set_PC(){
 
 function int_setPSW(result){
    if(result == 0){
-      cellAt(65531).value = z_flag;
+      cellAt(65531).innerHTML = z_flag;
       return z_flag;
    }if(result > 0){
-      cellAt(65531).value = "00000000";
+      cellAt(65531).innerHTML = "00000000";
       return "00000000";
    }if(result < 0){
-      cellAt(65531).value = n_flag;
+      cellAt(65531).innerHTML = n_flag;
       return n_flag;
    }
 }
 
 function byte_setPSW(result){
    if(result == "00000000"){
-      cellAt(65531).value = z_flag;
+      cellAt(65531).innerHTML = z_flag;
       return z_flag;
    }if(result[0] == "0"){
-      cellAt(65531).value = "00000000";
+      cellAt(65531).innerHTML = "00000000";
       return "00000000";
    }if(result[0] == "1"){
-      cellAt(65531).value = n_flag;
+      cellAt(65531).innerHTML = n_flag;
       return n_flag;
    }
 }
@@ -685,12 +805,11 @@ function int_to_10bit(theInt){
    return binary_string;
 }
 
-function nor_8bit(theByte){
+function not_8bit(byte_a){
    var binary_string = "";
 
    for(var i=0; i<8; i++){
-      if(theByte[i] == "1"){
-         console.log(theByte[i]);
+      if(byte_a[i] == "1"){
          binary_string += "0";
       }else{
          binary_string += "1";
@@ -698,6 +817,25 @@ function nor_8bit(theByte){
    }
 
    return binary_string;
+}
+
+function or_8bit(byte_a, byte_b){
+   var binary_string = "";
+
+   for(var i=0; i<8; i++){
+      if((byte_a[i] == "1")||(byte_b[i] == "1")){
+         binary_string += "1";
+      }else{
+         binary_string += "0";
+      }
+   }
+
+   return binary_string;
+}
+
+function nor_8bit(byte_a, byte_b){ 
+
+   return not_8bit(or_8bit(byte_a, byte_b));
 }
 
 function add_8bit(byteA, byteB){
@@ -753,7 +891,6 @@ function add_8bit(byteA, byteB){
 
 function sRange() {
    return "Stack table size: " + stack_Size + " (0-" + (stack_Size-1) + ")";
-
 }
 
 function cRange() {
@@ -771,7 +908,7 @@ function sValidCell(intCell) {
 
 function cValidCell(intCell) {
    //does the cell specified fall within the code range?
-   if((intCell>=0) && (intCell<code_Size)){
+   if(((intCell>=0) && (intCell<code_Size)) || ((intCell >= 65531) && (intCell <= 65535))){
       return true;
    }else{
       return false;
@@ -800,9 +937,6 @@ function cellAt(loc) {
 
    }else if(loc == 65531){ //PSW
       return document.getElementById('psw');
-
-   }else if(loc == 65530){ //STACK POINTER
-      return document.getElementById('sp');
 
    }else{
       console.log("Interpreter range exceeded! Program attempted to read/write at location " + loc + " of a min of 0 and a max of " + (code_Size-1));
@@ -886,6 +1020,54 @@ function op(OpcodeNum){
    }
 }
 
+function scrolify(tblAsJQueryObject, height, id){
+
+   var oTbl = tblAsJQueryObject;
+
+
+   // for very large tables you can remove the four lines below
+   // and wrap the table with <div> in the mark-up and assign
+   // height and overflow property
+
+   var oTblDiv = $("<div/>");
+   oTblDiv.css('height', height);
+   oTblDiv.css('overflow-y','scroll');
+   oTbl.wrap(oTblDiv);
+
+
+   // save original width
+   oTbl.attr("data-item-original-width", oTbl.width());
+   oTbl.find('thead tr td').each(function(){
+       $(this).attr("data-item-original-width",$(this).width());
+   });
+   oTbl.find('tbody tr:eq(0) td').each(function(){
+       $(this).attr("data-item-original-width",$(this).width());
+   });
+
+
+   // clone the original table
+   var newTbl = oTbl.clone();
+
+   // remove table header from original table
+   oTbl.find('thead tr').remove();
+   // remove table body from new table
+   newTbl.find('tbody tr').remove();
+
+   oTbl.parent().parent().prepend(newTbl);
+   newTbl.wrap("<div/>");
+
+   // replace ORIGINAL COLUMN width
+   newTbl.width(newTbl.attr('data-item-original-width'));
+   newTbl.find('thead tr td').each(function(){
+       $(this).width($(this).attr("data-item-original-width"));
+   });
+   oTbl.width(oTbl.attr('data-item-original-width'));
+   oTbl.find('tbody tr:eq(0) td').each(function(){
+       $(this).width($(this).attr("data-item-original-width"));
+   });
+
+   oTbl.find('tbody').attr('id',id);
+ }
 //##############################################################################################
 //                                       KEYBOARD CONTROL
 //##############################################################################################

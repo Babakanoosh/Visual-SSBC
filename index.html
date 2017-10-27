@@ -15,8 +15,6 @@
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script></script>
       <script src="SSBC_Interpreter.js"></script>
-      <script src="Scroll.js"></script>
-
 
       <title>Visual SSBC</title>
    </head>
@@ -42,8 +40,8 @@
 
       -->
 
-      <input type="file" onchange='readText(this)' >
-
+      <div id="info"><input id="file_in" type="file" onchange='readText(this)'>*V1.0 ALPHA 1* | SPECS: Code(1KB) Stack (0.5KB) | WORKS ON CHROME | F12/CTRL+SHIFT+I CONSOLE FOR DEBUG</div>
+      
       <table border="1px" id = "gui_table" class = "gui" >
 
          <tr id="gui_header">
@@ -57,21 +55,19 @@
             <td class = "interface">
 
                <table border="1px" style="width:100%;">
-                  <div style="height:5px"></div>
+                  <div style="height:3px"></div>
                   <div class = "heading">STATE</div>
-                  <div style="height:5px"></div>
                   <tr>
                      <td>
-                        <button style="width:100%" onclick="reset()">Reset</button>
+                        <button style="width:100%" onclick="reset_interpreter()">Reset</button>
                         <button style="width:100%" onclick="reload()">Reload</button>
                      </td>
                   </tr>
                </table>
 
                <table border="1px" style="width:100%;">
-                  <div style="height:5px"></div>
+                  <div style="height:3px"></div>
                   <div class = "heading">EXECUTION</div>
-                  <div style="height:5px"></div>
                   <tr>
                      <td style="width:50%" >
                         <button style="width:100%" onclick="step()">Step</button>
@@ -83,40 +79,45 @@
                </table>
 
                <table id="io_table" border="1px" style="width:100%;">
-                  <div style="height:5px"></div>
+                  <div style="height:3px"></div>
                   <div class = "heading">I/O</div>
-                  <div style="height:5px"></div>
-
+                  
                   <tr>
                      <td>
                         <button onclick="Set_PSW()">Set PSW</button>
                         <input type="text" size="10" maxlength="8" id="in_PSW">
                      </td>
-                     <td><div>PSW</div><input type="text" size="10" id="psw" readonly="true"></td>
+                     <td><div>PSW</div><div id="psw">-</div></td>
                   </tr>
+                  
                   <tr>
                      <td>
                      </td>
-                     <td><div>PORT A</div><input type="text" size="10" id="a" readonly="true"></td>
+                     <td><div>PORT A</div><div id="a">-</div></td>
                   </tr>
+                  
                   <tr>
                      <td>
                         <button style="width:100%" onclick="Set_B()">Set B</button>
                         <input type="text" size="10" maxlength="8" id="in_B" >
                      </td>
-                     <td><div>PORT B</div><input type="text" size="10" id="b" readonly="true"></td>
+                     <td><div>PORT B</div><div id="b">-</div></td>
                   </tr>
+                  
                   <tr>
                      <td>
                      </td>
-                     <td><div>PORT C</div><input type="text" size="10" id="c" readonly="true"></td>
+                     <td>
+                        <div>PORT C</div><div id="c">-</div>
+                     </td>
                   </tr>
+                  
                   <tr>
                      <td>
                         <button onclick="Set_D()">Set D</button>
                         <input type="text" size="10" maxlength="8" id="in_D">
                      </td>
-                     <td><div>PORT D</div><input type="binary" size="10" id="d" readonly="true"></td>
+                     <td><div>PORT D</div><div id="d">-</div></td>
                   </tr>
 
                   <tr>
@@ -124,20 +125,29 @@
                         <button onclick="Set_PC()">Set PC</button>
                         <input type="text" size="10" maxlength="10" id="in_PC">
                      </td>
-                     <td><div>PC</div><input type="text" size="10" id="pc" readonly="true"></td>
+                     <td><div>PC</div><div id="pc">-</div></td>
                   </tr>
 
-                  <tr><td></td><td><div>IR</div><input type="text" size="10" id="ir" readonly="true"></td></tr>
-                  <tr><td></td><td><div>IR (char)</div><input type="text" size="10" id="irc" readonly="true"></td></tr>
+                  <tr>
+                     <td>
+                        <div>IR (char)</div>
+                        <div id="irc">-</div>                     
+                     </td>
+                     <td>
+                        <div>IR</div>
+                        <div id="ir">-</div>
+                     </td>
+                  </tr>
+                  
                   <tr>
                      <td>
                         <button onclick="Set_SP()">Set SP</button>
                         <input type="text" size="10" maxlength="8" id="in_SP">
                      </td>
-                     <td><div>SP</div><input type="text" size="10" id="sp" readonly="true"></td>
+                     <td><div>SP</div><div id="sp">-</div></td>
                   </tr>
+                  
                </table>
-
             </td>
 
             <td class="stack" id="stack_td">
@@ -157,10 +167,9 @@
             </td>
 
             <td class = "code" id="code_td">
-
                <div style="width:100%; height: 100%; overflow-y: auto;">
-
                  <table border="1" id="dataSection">
+                 
                      <thead>
                         <tr><th>Line DEC</th><th>Line HEX</th><th>VALUE</th><th>COMMENTS</th></tr>
                      </thead>
@@ -168,14 +177,11 @@
                      <tbody>
                            <!-- fillCode() -->
                      </tbody>
+                     
                </table>
-
             </td>
-
+            
          </tr>
-
       </table>
-
    </body>
 </html>
-

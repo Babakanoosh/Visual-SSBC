@@ -1,6 +1,6 @@
 table.gui {
    width: 1250px;
-   height: 750px;
+   height: 100vmax;
    resize: false;
    left: 0px;
    top: 30px;
@@ -30,3 +30,12 @@ table.gui tr td.code{
 
 }
 
+#io_table div{
+   white-space: pre;
+}
+
+#info {
+   resize: false;
+   white-space: pre;
+   text-wrap: false;
+}
