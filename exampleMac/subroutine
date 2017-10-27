@@ -1,0 +1,44 @@
+00000011 pushext PSW      Subroutine Example
+11111111
+11111011                                 save PSW
+00000010 pushimm 0
+00000000
+00000101 popext PSW
+11111111
+11111011                                 clear Z in PSW
+00000010 pushimm L(YY)
+00001111                                 save L(YY)
+00000010 pushimm H(YY)
+00000000                                 save H(YY)
+00000110 jnz XX
+00000000
+00011001
+00000101 YY: popext PSW
+11111111
+11111011                                 restore PSW
+00000010 pushimm 1
+00000001
+00000101 popext C
+11111111
+11111110                                 write 1 to C
+00000001 halt
+00000000 ------------- subroutine -----------------------
+00000010 XX: pushimm 1
+00000001
+00000101 popext A
+11111111
+11111100                                 write 1 to A
+00000010 pushimm 0
+00000000
+00000101 popext PSW
+11111111
+11111011                                 clear Z
+00000101 popext XX+17d
+00000000
+00101010                                 load return address
+00000101 popext XX+18d
+00000000
+00101011
+00000110 jnz YY
+00000000                                 return address filled
+00000000                                 in at run time
