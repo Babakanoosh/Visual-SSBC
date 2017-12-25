@@ -71,7 +71,7 @@ var OPCODE = {
 //                                   INTERPRETER ROUTINES
 //##############################################################################################
 
-function execute(cmd) {////////////////////NOT WORKING//////////////////////////////////////////
+function execute(cmd) {
 
    var cTable = document.getElementById(Code_Table);
    var sTable = document.getElementById(Stack_Table);
@@ -459,7 +459,7 @@ function readText(that){
             //console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
 
             cTable.rows[row].cells[code_column].innerHTML = lines[line].substr(0,8);
-            cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,49);
+            cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,55);
             row++;
 
          }

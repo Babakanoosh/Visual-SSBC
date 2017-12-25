@@ -1,4 +1,4 @@
-00000010 pushimm 0              Sigma 5 Recursive Example (see tinpSrc/sigma5r)
+00000010 pushimm 0     Sigma 5 Recursive Example
 00000000
 00000101 popext PSW
 11111111
