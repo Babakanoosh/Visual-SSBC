@@ -22,30 +22,58 @@
 
    <body>
 
-   <!--
       <div class="navbar">
-        <a href="#home">Home</a>
-        <a href="#news">News</a>
-        <div class="dropdown">
-          <button class="dropbtn">Dropdown
-            <i class="fa fa-caret-down"></i>
-          </button>
-          <div class="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-          </div>
-        </div>
+      
+         <a>SSBC V5</a>
+        
+         <div class="dropdown">
+            <button class="dropbtn">Load Examples
+               <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+               <a href="#">add3.mac</a>
+               <a href="#">haltpop.mac</a>
+               <a href="#">popins.mac</a>
+               <a href="#">pushpop.mac</a>
+               <a href="#">sigma5.mac</a>
+               <a href="#">sigma5r.mac</a>
+               <a href="#">sub3.mac</a>
+               <a href="#">routine.mac</a>
+            </div>
+         </div>
+        
+         <div class="dropdown">
+            <button class="dropbtn">SSBC Info
+               <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+               <a href="#">SSBC ARTN (Original)</a>
+               <a href="#">SSBC ARTN (Mod)</a>
+               <a href="#">Dataflow Diagram</a>
+               <a href="#">pushpop.mac</a>
+               <a href="#">sigma5.mac</a>
+               <a href="#">sigma5r.mac</a>
+               <a href="#">sub3.mac</a>
+               <a href="#">routine.mac</a>
+            </div>
+         </div>
+        
+         <a href="#home">Tutorial</a>
+        
+         <a href="#news">About</a>
+         
+         <input id="file_in" type="file" onchange='readText(this)'>
+        
       </div>
 
-      -->
 
-      <div id="info"><input id="file_in" type="file" onchange='readText(this)'>*V1.0 ALPHA 1* | SPECS: Code(1KB) Stack (0.5KB) | WORKS IN CHROME | F12/CTRL+SHIFT+I CONSOLE FOR DEBUG</div>
+
+      <div id="info">*V1.0 ALPHA 1* | SPECS: Code(1KB) Stack (0.5KB) | WORKS IN CHROME | F12/CTRL+SHIFT+I CONSOLE FOR DEBUG</div>
       
       <table border="1px" id = "gui_table" class = "gui" >
 
          <tr id="gui_header">
-            <td >INTERFACE</td>
+            <td >CONTROLS</td>
             <td >STACK</td>
             <td >CODE</td>
          </tr>
