@@ -1,9 +1,12 @@
+body {
+   height: 90vmin;
+}
 table.gui {
    width: 1250px;
-   height: 100vmax;
+   height: 100%;
    resize: false;
    left: 0px;
-   top: 30px;
+   top: 0px;
 }
 
 #gui_header {

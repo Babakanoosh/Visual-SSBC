@@ -483,6 +483,7 @@ function readText(that){
 //                                      HTML MODIFICATION
 //##############################################################################################
 
+
 $(document).ready(function() {
    console.log("Initializing interpreter...");
    fillStack();
@@ -572,6 +573,7 @@ function fillCode() {
    console.log("Code fill done.");
    console.log("");
 }
+
 
 //##############################################################################################
 //                                     INTERFACE FUNCTIONS
