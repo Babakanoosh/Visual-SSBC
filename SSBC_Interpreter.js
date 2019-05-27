@@ -4,8 +4,8 @@
 //##############################################################################################
 //##############################################################################################
 
-var stack_Size = 512;
-var code_Size  = 1024;
+var stack_Size = 1024; //2^10
+var code_Size  = 1024; //2^10
 
 var bg_color   = "#F5F5F5";
 var sp_color   = "green";
@@ -59,6 +59,30 @@ var OPCODE = {
    SUB     : {op_num:  9, name: "Subtraction",      code: "sub"    , operands: 0},
    NOR     : {op_num: 10, name: "Not Or",           code: "nor"    , operands: 0}
 };
+
+
+//##############################################################################################
+//                                       EXAMPLE FILES
+//##############################################################################################
+
+//Example files in array form
+
+var Add3 = [ 
+"00000010 pushimm  Add -2 +1 +1 +1",
+"11111110          2s comp -2",
+"00000010 pushimm",
+"00000001",
+"00000010 pushimm",
+"00000001",
+"00000010 pushimm",
+"00000001",
+"00001000 add",
+"00001000 add",
+"00001000 add",
+"00000001 halt Stack now has +1 on it"
+];
+
+
 
 //##############################################################################################
 //##############################################################################################
@@ -120,7 +144,7 @@ function execute(cmd) {
       if(sValidCell(parseInt(document.getElementById('sp').innerHTML, 2) + 1)){
          console.log("       pushing: " + operand_h);
          top.innerHTML = operand_h;
-         document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) + 1);
+         document.getElementById('sp').innerHTML = int_to_10bit(parseInt(document.getElementById('sp').innerHTML, 2) + 1);
          return op(cmd).operands + 1;
       }else{
          console.log("ERROR: Stack full!");
@@ -141,7 +165,7 @@ function execute(cmd) {
             console.log("      addr dec: " + int_addr);
             console.log("       pushing: " + cellAt(int_addr).innerHTML);
 
-            document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) + 1);
+            document.getElementById('sp').innerHTML = int_to_10bit(parseInt(document.getElementById('sp').innerHTML, 2) + 1);
             top.innerHTML = cellAt(int_addr).innerHTML;
             cellAt(int_addr).style.backgroundColor = push_color;
             
@@ -166,7 +190,7 @@ function execute(cmd) {
       var int_sp = parseInt(document.getElementById('sp').innerHTML, 2);
 
       if(sValidCell(int_sp-1)){//is (stack pointer -1) addressable?
-         document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) - 1);
+         document.getElementById('sp').innerHTML = int_to_10bit(parseInt(document.getElementById('sp').innerHTML, 2) - 1);
 
          return op(cmd).operands + 1;
 
@@ -192,7 +216,7 @@ function execute(cmd) {
             console.log("      addr bin: " + addr_16bit);            
             console.log("      addr dec: " + int_addr);
             console.log("        poping: " + cellAt(int_addr).innerHTML);
-            document.getElementById('sp').innerHTML = int_to_8bit(parseInt(document.getElementById('sp').innerHTML, 2) - 1);
+            document.getElementById('sp').innerHTML = int_to_10bit(parseInt(document.getElementById('sp').innerHTML, 2) - 1);
             top.innerHTML = cellAt(int_addr).innerHTML;
 
             cellAt(int_addr).innerHTML = sTable.rows[parseInt(document.getElementById('sp').innerHTML,2)].cells[stack_column].innerHTML;
@@ -240,7 +264,7 @@ function execute(cmd) {
          sTable.rows[int_sp-2].cells[stack_column].style.backgroundColor = computed_colour;
 
          //decrement stack pointer
-         document.getElementById('sp').innerHTML = int_to_8bit((int_sp-1));
+         document.getElementById('sp').innerHTML = int_to_10bit((int_sp-1));
 
          return op(cmd).operands + 1;
       }else{// if not then error
@@ -285,7 +309,7 @@ function execute(cmd) {
          sTable.rows[int_sp-2].cells[stack_column].style.backgroundColor = computed_colour;
 
          //decrement stack pointer
-         document.getElementById('sp').innerHTML = int_to_8bit((int_sp-1));
+         document.getElementById('sp').innerHTML = int_to_10bit((int_sp-1));
 
          return op(cmd).operands + 1;
       }else{// if not then error
@@ -324,7 +348,7 @@ function execute(cmd) {
          sTable.rows[int_sp-2].cells[stack_column].style.backgroundColor = computed_colour;
 
          //decrement stack pointer
-         document.getElementById('sp').innerHTML = int_to_8bit((int_sp-1));
+         document.getElementById('sp').innerHTML = int_to_10bit((int_sp-1));
 
          return op(cmd).operands + 1;
       }else{// if not then error
@@ -434,7 +458,8 @@ function step() {
    sTable.rows[parseInt(document.getElementById('sp').innerHTML, 2)].cells[stack_column].style.backgroundColor = sp_color;
 }
 
-function readText(that){
+function readFile(inTxt){
+   //var inTxt = this; //rename param for ease of reading
    
    reset_interpreter()
    
@@ -442,10 +467,10 @@ function readText(that){
    sTable = document.getElementById(Stack_Table);
 
    console.log("Loading input file...");
-   //console.log(that.files[0]);
+   console.log(inTxt.files[0]);
 
-   if(that.files && that.files[0]){
-      selectedFile = that;
+   if(inTxt.files && inTxt.files[0]){
+      selectedFile = inTxt;
       var reader = new FileReader();
 
       reader.onload = function (e) {
@@ -469,7 +494,7 @@ function readText(that){
 
       };//end onload()
 
-      reader.readAsText(that.files[0]);
+      reader.readAsText(inTxt.files[0]);
 
       sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
 
@@ -477,6 +502,49 @@ function readText(that){
       console.log("File load done.");
       console.log("");
    }//end if html5 filelist support
+}
+
+function loadArray(arr){   
+   reset_interpreter()
+   
+   cTable = document.getElementById(Code_Table);
+   sTable = document.getElementById(Stack_Table);
+
+   console.log("Loading example file...");
+   //console.log(inTxt.files[0]);
+
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+         var output=e.target.result;
+
+         var row = 0;
+
+         var lines = this.result.split('\n');
+         console.log("Writing file to code table...");
+         for(var line = 0; line < lines.length; line++){
+            //console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
+
+            cTable.rows[row].cells[code_column].innerHTML = lines[line].substr(0,8);
+            cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,55);
+            row++;
+
+         }
+         console.log("Write done.");
+         console.log("");
+         cTable.rows[0].cells[code_column].style.backgroundColor = "yellow";
+
+      };//end onload()
+
+      reader.readAsText(arr);
+
+      sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
+
+      running = true;
+      console.log("File load done.");
+      console.log("");
+
 }
 
 //##############################################################################################
@@ -579,12 +647,44 @@ function fillCode() {
 //                                     INTERFACE FUNCTIONS
 //##############################################################################################
 
+
+function loadAdd3(){
+   //loadArray(Add3);
+}
+
+function loadPopins(){
+   
+}
+
+function loadPushpop(){
+   
+}
+
+function loadSigma5(){
+   
+}
+
+function loadSigma5r(){
+   
+}
+
+function loadSub3(){
+   
+}
+
+function loadRoutine(){
+   
+}
+
+
+
+
 function reload(){
 
    if(selectedFile != ""){
       console.log("Reloading file...");
       reset_interpreter();
-      readText(selectedFile);
+      readFile(selectedFile);
    }else{
       console.log("ERROR: No file selected. Can't reload nothing!");
       console.log("");
@@ -626,7 +726,7 @@ function reset_interpreter(){
 
    document.getElementById('in_SP').value = "";
    document.getElementById('in_SP').style.backgroundColor = txt_input_color;
-   document.getElementById('sp').innerHTML = "00000000";
+   document.getElementById('sp').innerHTML = "0000000000";
    document.getElementById('sp').style.backgroundColor = bg_color;
 
    document.getElementById('in_PSW').value = "";
@@ -899,7 +999,7 @@ function cRange() {
    return "Code table size: " + code_Size + " (0-" + (code_Size-1) + ")";
 }
 
-function sValidCell(intCell) {
+function sValidCell(intCell) { //is the specified stack cell existent
    //does the cell specified fall within the stack range?
    if((intCell>=0) && (intCell<stack_Size)){
       return true;
@@ -908,7 +1008,7 @@ function sValidCell(intCell) {
    }
 }
 
-function cValidCell(intCell) {
+function cValidCell(intCell) { //is the specified code cell existent
    //does the cell specified fall within the code range?
    if(((intCell>=0) && (intCell<code_Size)) || ((intCell >= 65531) && (intCell <= 65535))){
       return true;

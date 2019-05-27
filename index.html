@@ -11,9 +11,9 @@
       <link rel="stylesheet" type="text/css" href="GUI_Table.css">
       <link rel="stylesheet" type="text/css" href="Code_Table.css">
       <link rel="stylesheet" type="text/css" href="Stack_Table.css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script></script>
       <script src="SSBC_Interpreter.js"></script>
 
       <title>Visual SSBC</title>
@@ -47,13 +47,13 @@
                <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content">
-               <a>add3.mac</a>
-               <a>popins.mac</a>
-               <a>pushpop.mac</a>
-               <a>sigma5.mac</a>
-               <a>sigma5r.mac</a>
-               <a>sub3.mac</a>
-               <a>routine.mac</a>
+               <a onclick="loadAdd3()">add3.mac</a>
+               <a onclick="loadPopins()">popins.mac</a>
+               <a onclick="loadPushpop()">pushpop.mac</a>
+               <a onclick="loadSigma5()">sigma5.mac</a>
+               <a onclick="loadSigma5r()">sigma5r.mac</a>
+               <a onclick="loadSub3()">sub3.mac</a>
+               <a onclick="loadRoutine()">routine.mac</a>
             </div>
          </div>
         
@@ -62,9 +62,9 @@
                <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content">
-               <a>SSBC ARTN (Original)</a>
-               <a>SSBC ARTN (Mod)</a>
-               <a>Dataflow Diagram</a>
+               <a href="ssbc-v5-r1.artn" target="_blank" type="text/rtf">SSBC ARTN (Original)</a>
+               <a href="ssbc-v5-r1-mine.pdf" target="_blank" type="application/pdf">SSBC ARTN (My Version)</a>
+               <a href="ssbc-fig.pdf" target="_blank" type="application/pdf">Dataflow Diagram</a>
             </div>
          </div>
         
@@ -74,14 +74,10 @@
          
          
          <div class="dropdown">
-            <input class="dropbtn" type="file" onchange='readText(this)'></input>
+            <input id="file_in" class="dropbtn" type="file" onchange="readFile(this)"></input>
          </div>
         
       </div>
-
-
-
-
 
       <table border="1px" id = "gui_table" class = "gui" >
 
@@ -183,7 +179,7 @@
                   <tr>
                      <td>
                         <button onclick="Set_SP()">Set SP</button>
-                        <input type="text" size="10" maxlength="8" id="in_SP">
+                        <input type="text" size="10" maxlength="10" id="in_SP">
                      </td>
                      <td><div>SP</div><div id="sp">-</div></td>
                   </tr>
@@ -226,36 +222,33 @@
       </table>
       
       
-      
-      
-      
-      <script>
-// Get the modal
-var modal = document.getElementById('myModal');
+    <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
 
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-    modal.style.display = "block";
-}
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-</script>
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
       
    </body>
 </html>
