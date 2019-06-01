@@ -62,29 +62,6 @@ var OPCODE = {
 
 
 //##############################################################################################
-//                                       EXAMPLE FILES
-//##############################################################################################
-
-//Example files in array form
-
-var Add3 = [ 
-"00000010 pushimm  Add -2 +1 +1 +1",
-"11111110          2s comp -2",
-"00000010 pushimm",
-"00000001",
-"00000010 pushimm",
-"00000001",
-"00000010 pushimm",
-"00000001",
-"00001000 add",
-"00001000 add",
-"00001000 add",
-"00000001 halt Stack now has +1 on it"
-];
-
-
-
-//##############################################################################################
 //##############################################################################################
 //##############################################################################################
 //##############################################################################################
@@ -490,7 +467,7 @@ function readFile(inTxt){
          }
          console.log("Write done.");
          console.log("");
-         cTable.rows[0].cells[code_column].style.backgroundColor = "yellow";
+         cTable.rows[0].cells[code_column].style.backgroundColor = pc_color;
 
       };//end onload()
 
@@ -510,40 +487,28 @@ function loadArray(arr){
    cTable = document.getElementById(Code_Table);
    sTable = document.getElementById(Stack_Table);
 
-   console.log("Loading example file...");
-   //console.log(inTxt.files[0]);
+   console.log("Loading example ...");
 
+   var row = 0;
 
-      var reader = new FileReader();
+   console.log("Writing file to code table...");
+   for(var line = 0; line < arr.length; line++){
 
-      reader.onload = function (e) {
-         var output=e.target.result;
+      cTable.rows[row].cells[code_column].innerHTML = arr[line].substr(0,8);
+      cTable.rows[row].cells[comment_column].innerHTML = arr[line].substr(9,55);
+      row++;
 
-         var row = 0;
+   }
+   
+   console.log("Write done.");
+   console.log("");
+   
+   cTable.rows[0].cells[code_column].style.backgroundColor = pc_color;
+   sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
 
-         var lines = this.result.split('\n');
-         console.log("Writing file to code table...");
-         for(var line = 0; line < lines.length; line++){
-            //console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
-
-            cTable.rows[row].cells[code_column].innerHTML = lines[line].substr(0,8);
-            cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,55);
-            row++;
-
-         }
-         console.log("Write done.");
-         console.log("");
-         cTable.rows[0].cells[code_column].style.backgroundColor = "yellow";
-
-      };//end onload()
-
-      reader.readAsText(arr);
-
-      sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
-
-      running = true;
-      console.log("File load done.");
-      console.log("");
+   running = true;
+   console.log("Example load done.");
+   console.log("");
 
 }
 
@@ -647,37 +612,33 @@ function fillCode() {
 //                                     INTERFACE FUNCTIONS
 //##############################################################################################
 
-
 function loadAdd3(){
-   //loadArray(Add3);
+   loadArray(Add3);
 }
 
 function loadPopins(){
-   
+   loadArray(Popins);
 }
 
 function loadPushpop(){
-   
+   loadArray(Pushpop);
 }
 
 function loadSigma5(){
-   
+   loadArray(Sigma5);
 }
 
 function loadSigma5r(){
-   
+   loadArray(Sigma5r);
 }
 
 function loadSub3(){
-   
+   loadArray(Sub3);
 }
 
 function loadRoutine(){
-   
+   loadArray(Routine);
 }
-
-
-
 
 function reload(){
 
@@ -1243,3 +1204,276 @@ $(function(){
       }
     });
 });
+
+
+//##############################################################################################
+//                                         EXAMPLES
+//##############################################################################################
+
+//Example files in array form as javascript cannon access local files
+
+var Add3 = new Array ( 
+"00000010 pushimm  Add -2 +1 +1 +1",
+"11111110          2s comp -2",
+"00000010 pushimm",
+"00000001",
+"00000010 pushimm",
+"00000001",
+"00000010 pushimm",
+"00000001",
+"00001000 add",
+"00001000 add",
+"00001000 add",
+"00000001 halt Stack now has +1 on it"
+);
+
+var Popins = new Array ( 
+"00000010 pushimm 1 what happens when I pop a # into the code?",
+"00000001",
+"00000101 popext line 5",
+"00000000",
+"00000101",
+"00000000"
+);
+
+var Pushpop = new Array ( 
+"00000010 pushimm 1  Watch the stack pointer fly around!",
+"00000001",
+"00000100 popinh",
+"00000010 pushimm 1",
+"00000001",
+"00000100 popinh",
+"00000010 pushimm 1",
+"00000001",
+"00000100 popinh",
+"00000010 pushimm 1",
+"00000001",
+"00000010 pushimm 1",
+"00000001",
+"00000010 pushimm 1",
+"00000001",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000010 pushimm 1",
+"00000001",
+"00000010 pushimm 0",
+"00000000",
+"00000010 pushimm 1",
+"00000001",
+"00000010 pushimm 0",
+"00000000",
+"00000010 pushimm 1",
+"00000001",
+"00000010 pushimm 0",
+"00000000",
+"00000010 pushimm 1",
+"00000001",
+"00000010 pushimm 0",
+"00000000",
+"00000010 pushimm 1",
+"00000001",
+"00000010 pushimm 0",
+"00000000",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000100 popinh",
+"00000001 halt"
+);
+
+var Sigma5 = new Array ( 
+"00000010 pushimm 0       Sigma 5 Example",
+"00000000",
+"00000101 popext 0200",
+"00000010",
+"00000000",
+"00000010 pushimm 5",
+"00000101",
+"00000101 popext 0201",
+"00000010",
+"00000001",
+"00000011 pushext 0201",
+"00000010",
+"00000001",
+"00000011 pushext 0200",
+"00000010",
+"00000000",
+"00001000 add",
+"00000101 popext 0200",
+"00000010",
+"00000000",
+"00000010 pushimm 1",
+"00000001",
+"00000011 pushext 0201",
+"00000010",
+"00000001",
+"00001001 sub",
+"00000110 jnz 0007",
+"00000000",
+"00000111",
+"00000100 popinh",
+"00000011 pushext 0200",
+"00000010",
+"00000000",
+"00000101 popext FFFE",
+"11111111",
+"11111110",
+"00000001 halt",
+"00000000 C should have the value 000F (15)"
+);
+
+var Sigma5r = new Array ( 
+"00000010 pushimm 0     Sigma 5 Recursive Example",
+"00000000",
+"00000101 popext PSW",
+"11111111",
+"11111011",
+"00000010 pushimm L(YY)",
+"00001110                               save L(YY)",
+"00000010 pushimm H(YY)",
+"00000000                               save H(YY)",
+"00000010 pushimm 5",
+"00000101                               save parameter",
+"00000110 jnz sigmar5",
+"00000000",
+"00010011                               call sigma5r",
+"00000101 YY: popext A",
+"11111111",
+"11111100                               write ret. parameter to A",
+"00000001 halt",
+"00000000 ------------------subroutine --------------------------------",
+"00000010 sigma5r: pushimm 0",
+"00000000",
+"00001000 add                           activate Z flag",
+"00000110 jnz reccall                   recursive call if not base case",
+"00000000",
+"00100111",
+"00000101 popext PSW",
+"11111111",
+"11111011                               clear Z",
+"00000101 popext sigma5r + 12h",
+"00000000",
+"00100101",
+"00000101 popext sigma5r + 13h",
+"00000000",
+"00100110                                load return address",
+"00000010 pushimm 0",
+"00000000                                load return parameter",
+"00000110 jnz",
+"00000000                                return address filled",
+"00000000                                in at run time",
+"00000101 reccall: popext hold",
+"00000001",
+"00000000                                save parameter in hold",
+"00000011 pushext hold",
+"00000001",
+"00000000",
+"00000010 pushimm L(recret)",
+"00111111",
+"00000010 pushimm H(recret)",
+"00000000                                load return address",
+"00000010 pushimm 1",
+"00000001",
+"00000011 pushext hold",
+"00000001",
+"00000000",
+"00001001 sub                            sub 1 from parameter",
+"00000010 pushimm 0",
+"00000000",
+"00000101 popext PSW",
+"11111111",
+"11111011",
+"00000110 jnz sigma5r                    recursive call",
+"00000000",
+"00010011",
+"00001000 recret: add                    add sigma n and sigma n-1",
+"00000101 popext hold",
+"00000001",
+"00000000",
+"00000010 pushimm 0",
+"00000000",
+"00000101 popext PSW",
+"11111111",
+"11111011",
+"00000101 popext sigma5r + 3fh",
+"00000000",
+"01010010",
+"00000101 popext sigma5r + 40h",
+"00000000",
+"01010011",
+"00000011 pushext hold                   load return parameter",
+"00000001",
+"00000000",
+"00000110 jnz",
+"00000000                                 return address",
+"00000000                                 in at runtime"
+);
+
+var Sub3 = new Array ( 
+"00000010 pushimm   Subtract  1-1-1-1 = -2",
+"00000001",
+"00000010 pushimm",
+"00000001",
+"00000010 pushimm",
+"00000001",
+"00000010 pushimm",
+"00000001",
+"00001001 sub",
+"00001001 sub",
+"00001001 sub",
+"00000001 halt   Stack now has -2 on it"
+);
+
+var Routine = new Array ( 
+"00000011 pushext PSW      Subroutine Example",
+"11111111",
+"11111011                                 save PSW",
+"00000010 pushimm 0",
+"00000000",
+"00000101 popext PSW",
+"11111111",
+"11111011                                 clear Z in PSW",
+"00000010 pushimm L(YY)",
+"00001111                                 save L(YY)",
+"00000010 pushimm H(YY)",
+"00000000                                 save H(YY)",
+"00000110 jnz XX",
+"00000000",
+"00011001",
+"00000101 YY: popext PSW",
+"11111111",
+"11111011                                 restore PSW",
+"00000010 pushimm 1",
+"00000001",
+"00000101 popext C",
+"11111111",
+"11111110                                 write 1 to C",
+"00000001 halt",
+"00000000 ------------- subroutine -----------------------",
+"00000010 XX: pushimm 1",
+"00000001",
+"00000101 popext A",
+"11111111",
+"11111100                                 write 1 to A",
+"00000010 pushimm 0",
+"00000000",
+"00000101 popext PSW",
+"11111111",
+"11111011                                 clear Z",
+"00000101 popext XX+17d",
+"00000000",
+"00101010                                 load return address",
+"00000101 popext XX+18d",
+"00000000",
+"00101011",
+"00000110 jnz YY",
+"00000000                                 return address filled",
+"00000000                                 in at run time",
+);

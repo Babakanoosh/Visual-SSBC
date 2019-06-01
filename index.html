@@ -26,14 +26,30 @@
 
    <body>
    
-          <!-- The Modal -->
+         <!-- The Modal -->
 <div id="myModal" class="modal">
 
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p>This version of the simulator is for SSBC V5</p>
-    <p>Loading code written for a different SSBC verion will likely not work as the op codes will have changed!</p>
+   <!-- Modal content -->
+   <div class="modal-content">
+   <span class="close">&times;</span>
+   <p>This version of the simulator is for SSBC V5 R1</p>
+   <p>Loading code written for a different SSBC version will likely not work as the op codes will have changed!</p>
+   <p>###SSBC V5 R1 OP CODE SPECIFICATION###</P>
+   <p>
+      <table border="1px">
+         <tr><td>0:NOOP</td></tr> 
+         <tr><td>1:HALT</td></tr> 
+         <tr><td>2:PUSHIMM</td></tr>
+         <tr><td>3:PUSHEXT</td></tr>
+         <tr><td>4:POPINH</td></tr>
+         <tr><td>5:POPEXT</td></tr>
+         <tr><td>6:JNZ</td></tr> 
+         <tr><td>7:JNN</td></tr>
+         <tr><td>8:ADD</td></tr>
+         <tr><td>9:SUB</td></tr>
+         <tr><td>10:NOR</td></tr>
+      </table>
+   </p>
   </div>
 
 </div>
