@@ -21,18 +21,18 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
       - Full size of stack. **todo**
 
    - **Visual SSBC 1.0**
-      -Features:
+      - Features:
          - New HTML layout.
          - Stack and code table are scrollable.
          - Stack and code have Dec and Hex line numbering.
          - Console based debugger. Press F12 or CTRL+SHIFT+I to view output
          
-      -Improvements:
+      - Improvements:
          - Basic user input checking to prevent stupid mistakes.
          - Increased size of stack. (48  -> 1024 Bytes)
          - Increased size of code.  (256 -> 1024 Bytes)
          
-      -Bug Fixes:
+      - Bug Fixes:
          - Bytes no-longer change from binary to decimal during execution.
          - Various bug fixes in the execution routine.
       
@@ -43,9 +43,9 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
    - V1_alpha_2 *new features*
       - Increased size of stack. (48  ->  1024 Bytes)
       - Added a nav bar
-         -SSBC documentation
-         -Interpreter settings
-         -Interpreter info
+         - SSBC documentation
+         - Interpreter settings
+         - Interpreter info
       
    - V1_alpha *fixing what we have*
       - New HTML layout!
