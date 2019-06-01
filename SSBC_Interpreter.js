@@ -436,7 +436,6 @@ function step() {
 }
 
 function readFile(inTxt){
-   //var inTxt = this; //rename param for ease of reading
    
    reset_interpreter()
    
@@ -449,34 +448,33 @@ function readFile(inTxt){
    if(inTxt.files && inTxt.files[0]){
       selectedFile = inTxt;
       var reader = new FileReader();
-
+      
+      reader.readAsText(inTxt.files[0]);
+      
       reader.onload = function (e) {
          var output=e.target.result;
-
          var row = 0;
-
          var lines = this.result.split('\n');
          console.log("Writing file to code table...");
+         
          for(var line = 0; line < lines.length; line++){
             //console.log(lines[line].substr(0,8) + " ||| " + lines[line].substr(9,49));
 
             cTable.rows[row].cells[code_column].innerHTML = lines[line].substr(0,8);
             cTable.rows[row].cells[comment_column].innerHTML = lines[line].substr(9,55);
             row++;
-
          }
-         console.log("Write done.");
+         
+         console.log("Code write done.");
          console.log("");
-         cTable.rows[0].cells[code_column].style.backgroundColor = pc_color;
-
       };//end onload()
 
-      reader.readAsText(inTxt.files[0]);
-
+      
+      cTable.rows[0].cells[code_column].style.backgroundColor = pc_color;
       sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
 
       running = true;
-      console.log("File load done.");
+      console.log("File loaded.");
       console.log("");
    }//end if html5 filelist support
 }
@@ -500,14 +498,14 @@ function loadArray(arr){
 
    }
    
-   console.log("Write done.");
+   console.log("Code write done.");
    console.log("");
    
    cTable.rows[0].cells[code_column].style.backgroundColor = pc_color;
    sTable.rows[0].cells[stack_column].style.backgroundColor = sp_color;
 
    running = true;
-   console.log("Example load done.");
+   console.log("Example loaded.");
    console.log("");
 
 }

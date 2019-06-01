@@ -34,6 +34,10 @@
    <span class="close">&times;</span>
    <p>This version of the simulator is for SSBC V5 R1</p>
    <p>Loading code written for a different SSBC version will likely not work as the op codes will have changed!</p>
+   <p>Code and stack memory are 1 KB due to web browser limitations. The full SSBC spec has 64KB and the code and stack share the same memory.
+   The code is loaded into memory at position 0 and the stack is loaded into memory at 65,531. The code pointer increments and the stack pointer decrements.
+   If enough code and/or stack memory is used the two could overwrite each other during execution.</p>
+   
    <p>###SSBC V5 R1 OP CODE SPECIFICATION###</P>
    <p>
       <table border="1px">
