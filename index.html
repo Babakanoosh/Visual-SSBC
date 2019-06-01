@@ -11,41 +11,98 @@
       <link rel="stylesheet" type="text/css" href="GUI_Table.css">
       <link rel="stylesheet" type="text/css" href="Code_Table.css">
       <link rel="stylesheet" type="text/css" href="Stack_Table.css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script></script>
       <script src="SSBC_Interpreter.js"></script>
 
       <title>Visual SSBC</title>
+      
+       
+
+       
    </head>
 
 
    <body>
+   
+         <!-- The Modal -->
+<div id="myModal" class="modal">
 
-   <!--
+   <!-- Modal content -->
+   <div class="modal-content">
+   <span class="close">&times;</span>
+   <p>This version of the simulator is for SSBC V5 R1</p>
+   <p>Loading code written for a different SSBC version will likely not work as the op codes will have changed!</p>
+   <p>Code and stack memory are 1 KB due to web browser limitations. The full SSBC spec has 64KB and the code and stack share the same memory.
+   The code is loaded into memory at position 0 and the stack is loaded into memory at 65,531. The code pointer increments and the stack pointer decrements.
+   If enough code and/or stack memory is used the two could overwrite each other during execution.</p>
+   
+   <p>###SSBC V5 R1 OP CODE SPECIFICATION###</P>
+   <p>
+      <table border="1px">
+         <tr><td>0:NOOP</td></tr> 
+         <tr><td>1:HALT</td></tr> 
+         <tr><td>2:PUSHIMM</td></tr>
+         <tr><td>3:PUSHEXT</td></tr>
+         <tr><td>4:POPINH</td></tr>
+         <tr><td>5:POPEXT</td></tr>
+         <tr><td>6:JNZ</td></tr> 
+         <tr><td>7:JNN</td></tr>
+         <tr><td>8:ADD</td></tr>
+         <tr><td>9:SUB</td></tr>
+         <tr><td>10:NOR</td></tr>
+      </table>
+   </p>
+  </div>
+
+</div>
+
       <div class="navbar">
-        <a href="#home">Home</a>
-        <a href="#news">News</a>
-        <div class="dropdown">
-          <button class="dropbtn">Dropdown
-            <i class="fa fa-caret-down"></i>
-          </button>
-          <div class="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-          </div>
-        </div>
+         <div class="dropdown">
+            <button class="dropbtn" id="myBtn">SSBC V5</button>
+         </div>
+         <div class="dropdown">
+            <button class="dropbtn">Load Examples
+               <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+               <a onclick="loadAdd3()">add3.mac</a>
+               <a onclick="loadPopins()">popins.mac</a>
+               <a onclick="loadPushpop()">pushpop.mac</a>
+               <a onclick="loadSigma5()">sigma5.mac</a>
+               <a onclick="loadSigma5r()">sigma5r.mac</a>
+               <a onclick="loadSub3()">sub3.mac</a>
+               <a onclick="loadRoutine()">routine.mac</a>
+            </div>
+         </div>
+        
+         <div class="dropdown">
+            <button class="dropbtn">SSBC Info
+               <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+               <a href="ssbc-v5-r1.artn" target="_blank" type="text/rtf">SSBC ARTN (Original)</a>
+               <a href="ssbc-v5-r1-mine.pdf" target="_blank" type="application/pdf">SSBC ARTN (My Version)</a>
+               <a href="ssbc-fig.pdf" target="_blank" type="application/pdf">Dataflow Diagram</a>
+            </div>
+         </div>
+        
+         <a>Tutorial</a>
+        
+         <a>About</a>
+         
+         
+         <div class="dropdown">
+            <input id="file_in" class="dropbtn" type="file" onchange="readFile(this)"></input>
+         </div>
+        
       </div>
 
-      -->
-
-      <div id="info"><input id="file_in" type="file" onchange='readText(this)'>*V1.0 ALPHA 1* | SPECS: Code(1KB) Stack (0.5KB) | WORKS IN CHROME | F12/CTRL+SHIFT+I CONSOLE FOR DEBUG</div>
-      
       <table border="1px" id = "gui_table" class = "gui" >
 
          <tr id="gui_header">
-            <td >INTERFACE</td>
+            <td >CONTROLS</td>
             <td >STACK</td>
             <td >CODE</td>
          </tr>
@@ -142,7 +199,7 @@
                   <tr>
                      <td>
                         <button onclick="Set_SP()">Set SP</button>
-                        <input type="text" size="10" maxlength="8" id="in_SP">
+                        <input type="text" size="10" maxlength="10" id="in_SP">
                      </td>
                      <td><div>SP</div><div id="sp">-</div></td>
                   </tr>
@@ -183,5 +240,35 @@
             
          </tr>
       </table>
+      
+      
+    <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+      
    </body>
 </html>

@@ -1,5 +1,5 @@
-00000010 pushimm 0                     Sigma 5 Example (machine language)
-00000000                               SSBC Version: v5 r0
+00000010 pushimm 0       Sigma 5 Example
+00000000
 00000101 popext 0200
 00000010
 00000000

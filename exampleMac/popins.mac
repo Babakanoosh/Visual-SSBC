@@ -1,5 +1,6 @@
-00000010 pushimm 1 ; what happens when I pop something into my code?
+00000010 pushimm 1 what happens when I pop a # into the code?
 00000001
-00000101 popext 1
+00000101 popext line 5
 00000000
-00000001
+00000101
+00000000

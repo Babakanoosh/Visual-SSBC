@@ -21,17 +21,18 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
       - Full size of stack. **todo**
 
    - **Visual SSBC 1.0**
-      -Features:
-         - New HTML layout!
-         - Stack and code table scrollable.
+      - Features:
+         - New HTML layout.
+         - Stack and code table are scrollable.
          - Stack and code have Dec and Hex line numbering.
+         - Console based debugger. Press F12 or CTRL+SHIFT+I to view output
          
-      -Improvements:
+      - Improvements:
          - Basic user input checking to prevent stupid mistakes.
-         - Increased size of stack. (48  ->  512 Bytes)
+         - Increased size of stack. (48  -> 1024 Bytes)
          - Increased size of code.  (256 -> 1024 Bytes)
          
-      -Bug Fixes:
+      - Bug Fixes:
          - Bytes no-longer change from binary to decimal during execution.
          - Various bug fixes in the execution routine.
       
@@ -40,16 +41,15 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
       - bug fixes **todo**
 
    - V1_alpha_2 *new features*
-      - Added nav bar: **todo**
-         - about.
-         - cut-down ARTN.
-         - architecture.
-         - sample code.
-         - current-file indication.
-
+      - Increased size of stack. (48  ->  1024 Bytes)
+      - Added a nav bar
+         - SSBC documentation
+         - Interpreter settings
+         - Interpreter info
+      
    - V1_alpha *fixing what we have*
       - New HTML layout!
-      - Interpreter works with new HTML layout.
+      - Interpreter actually works with new HTML layout.
       - Stack and code table scrollable.
       - Simplified HTML structure and removed rendundant stuff.
       - Increased size of stack. (48  ->  512 Bytes)
@@ -60,7 +60,6 @@ The op-codes have been updated to work with the latest SSBC version. The "GUI" h
       - Stack and Code area size filled in by javascript DOM code to avoid HTML clutter.
       - Various bug fixes in the execution routine.
       - Basic user input checking to prevent stupid mistakes.
-
 
    - Original++ (master) *fixed the most essential things*
       - Updated opcodes to latest SSBC specification.

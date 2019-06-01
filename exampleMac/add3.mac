@@ -1,4 +1,4 @@
-00000010 pushimm
+00000010 pushimm  Add -2 +1 +1 +1
 11111110          2s comp -2
 00000010 pushimm
 00000001
@@ -9,4 +9,4 @@
 00001000 add
 00001000 add
 00001000 add
-00000001 halt
+00000001 halt Stack now has +1 on it

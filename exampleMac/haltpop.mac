@@ -1,5 +1,0 @@
-00000010 pushimm 1 ; pops the halt instruction to 2 bytes after the code
-00000001           ; note: I am assuming there is a noop at byte 6
-00000101 popext 7
-00000000
-00000111
